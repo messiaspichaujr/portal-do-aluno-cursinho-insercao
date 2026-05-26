@@ -1,6 +1,6 @@
 package pt.cursinhoinsercao.portalaluno.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -22,7 +22,7 @@ public class Usuario {
     @Column(name = "email")
     private String email;
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "senha")
     private String senha;
 

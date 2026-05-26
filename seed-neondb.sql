@@ -1,7 +1,7 @@
 -- ============================================================
 -- Seed para NeonDB (PostgreSQL)
 -- Criação do usuário Admin inicial
--- Login: admin@cursinho.com / Senha: admin123
+-- Login: admin@cursinho.com / Senha: Pac4Finaly321!
 -- IMPORTANTE: Altere a senha após o primeiro login!
 -- ============================================================
 -- NOTA: As tabelas são criadas automaticamente pelo Hibernate
@@ -21,5 +21,5 @@ INSERT INTO tipo_frequencia (id, tipo) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO usuario (id, tipo, nome, email, senha, ativo) VALUES
-(1, 1, 'Administrador', 'admin@cursinho.com', '$2b$12$jBfXDWrDRR7xnMNOpjR.ZeWI3pmklVg8qcYxPdqSCCThAAntC1MRK', true)
+(1, 1, 'Administrador', 'admin@cursinho.com', '$2a$12$2rjEbFAiKo8FhXRXt2vdGu0VfAlTdd8uUPixb9MtW4pd0XO3umpP2', true)
 ON CONFLICT (id) DO NOTHING;

@@ -17,8 +17,8 @@ const Nav = styled.nav`
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
     ${props => props.$scrolled ? `
-        background-color: #0D76B8;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+        background-color: #1E1B16;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
     ` : `
         background-color: transparent;
     `}
@@ -41,31 +41,32 @@ const NavLinks = styled.div`
     }
 `;
 
-const NavLink = styled(Link)`
+const NavLink = styled.a`
     font-size: 0.95rem;
     font-weight: 500;
     text-decoration: none;
     color: #FFF;
-    opacity: 0.9;
-    transition: opacity 0.2s;
+    opacity: 0.85;
+    transition: opacity 0.2s, color 0.2s;
 
     &:hover {
         opacity: 1;
+        color: #F2B924;
     }
 `;
 
 const LoginButton = styled(Link)`
-    padding: 0.6rem 1.5rem;
-    background-color: #E23467;
-    color: #FFF;
+    padding: 0.6rem 1.6rem;
+    background-color: #F2B924;
+    color: #1E1B16;
     text-decoration: none;
     border-radius: 2rem;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
     transition: background-color 0.2s, transform 0.2s;
 
     &:hover {
-        background-color: #c62a55;
+        background-color: #C49A1A;
         transform: translateY(-1px);
     }
 `;
@@ -97,11 +98,11 @@ const MobileMenu = styled.div`
     top: 72px;
     left: 0;
     right: 0;
-    background-color: #0D76B8;
+    background-color: #1E1B16;
     padding: 1.5rem;
     flex-direction: column;
     gap: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 999;
 
     @media (max-width: 768px) {
@@ -119,7 +120,8 @@ const MobileLink = styled(Link)`
     transition: background-color 0.2s;
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(242, 185, 36, 0.15);
+        color: #F2B924;
     }
 `;
 
@@ -159,10 +161,9 @@ export default function Navbar() {
             </Nav>
 
             <MobileMenu $open={mobileOpen}>
-                <MobileLink href="#sobre">Sobre</MobileLink>
-                <MobileLink href="#contato">Contato</MobileLink>
+                <MobileLink as="a" href="#sobre" onClick={() => setMobileOpen(false)}>Sobre</MobileLink>
+                <MobileLink as="a" href="#contato" onClick={() => setMobileOpen(false)}>Contato</MobileLink>
                 <MobileLink to="/portal/login">Entrar</MobileLink>
-                <MobileLink to="/admin/login">Administração</MobileLink>
             </MobileMenu>
         </>
     );

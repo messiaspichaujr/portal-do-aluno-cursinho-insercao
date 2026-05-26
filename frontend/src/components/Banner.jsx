@@ -4,14 +4,14 @@ import bannerReserva from "../assets/imgs/img_capa_exemplo.jpg";
 const HeroSection = styled.section`
     position: relative;
     width: 100%;
-    min-height: 80vh;
+    min-height: 90vh;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
 
     @media (max-width: 768px) {
-        min-height: 60vh;
+        min-height: 70vh;
     }
 `;
 
@@ -33,9 +33,9 @@ const Overlay = styled.div`
     height: 100%;
     background: linear-gradient(
         to bottom,
-        rgba(13, 118, 184, 0.55) 0%,
-        rgba(13, 118, 184, 0.75) 50%,
-        rgba(13, 118, 184, 0.9) 100%
+        rgba(30, 27, 22, 0.45) 0%,
+        rgba(30, 27, 22, 0.65) 50%,
+        rgba(30, 27, 22, 0.85) 100%
     );
 `;
 
@@ -45,47 +45,48 @@ const HeroContent = styled.div`
     text-align: center;
     color: #FFFFFF;
     padding: 0 2rem;
-    max-width: 700px;
+    max-width: 750px;
 `;
 
 const HeroTitle = styled.h1`
-    font-size: 3.2rem;
+    font-size: 3.6rem;
     font-weight: 800;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     letter-spacing: -0.5px;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
     @media (max-width: 768px) {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
 `;
 
 const HeroSubtitle = styled.p`
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     font-weight: 300;
-    line-height: 1.6;
+    line-height: 1.7;
     opacity: 0.95;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 
     @media (max-width: 768px) {
-        font-size: 0.95rem;
+        font-size: 1rem;
     }
 `;
 
 const HeroCTA = styled.a`
     display: inline-block;
-    padding: 0.85rem 2.5rem;
+    padding: 1rem 3rem;
     background-color: #F2B924;
-    color: #333;
+    color: #1E1B16;
     text-decoration: none;
     border-radius: 2rem;
     font-weight: 700;
-    font-size: 1rem;
-    transition: background-color 0.2s, transform 0.2s;
+    font-size: 1.05rem;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
 
     &:hover {
-        background-color: #e0a820;
+        background-color: #C49A1A;
         transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(242, 185, 36, 0.3);
     }
 `;
 

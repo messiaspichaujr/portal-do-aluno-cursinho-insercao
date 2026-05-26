@@ -3,27 +3,27 @@ import { getUploadUrl } from '../services/uploads';
 
 const SectionWrapper = styled.section`
     width: 100%;
-    padding: 5rem 0;
+    padding: 6rem 0;
     background-color: ${props => props.$even ? '#FEF8E9' : '#FFFFFF'};
 
     &:last-of-type {
-        padding-bottom: 4rem;
+        padding-bottom: 5rem;
     }
 `;
 
 const Content = styled.div`
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
     display: flex;
     align-items: center;
-    gap: 3rem;
+    gap: 4rem;
 
     ${props => props.$reverse ? 'flex-direction: row-reverse;' : 'flex-direction: row;'}
 
     @media (max-width: 768px) {
         flex-direction: column;
-        gap: 2rem;
+        gap: 2.5rem;
     }
 `;
 
@@ -37,21 +37,21 @@ const TextContent = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: 700;
-    color: #0D76B8;
-    margin-bottom: 1rem;
+    color: #C49A1A;
+    margin-bottom: 1.2rem;
     line-height: 1.3;
 
     @media (max-width: 768px) {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
     }
 `;
 
 const SectionText = styled.p`
-    font-size: 1.05rem;
-    line-height: 1.75;
-    color: #555;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4A453E;
 `;
 
 const ImageContent = styled.div`
@@ -61,10 +61,10 @@ const ImageContent = styled.div`
 
 const SectionImage = styled.img`
     width: 100%;
-    max-height: 400px;
+    max-height: 450px;
     object-fit: cover;
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease;
 
     &:hover {

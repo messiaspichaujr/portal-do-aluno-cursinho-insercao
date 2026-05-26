@@ -16,7 +16,7 @@ const LoadingContainer = styled.div`
     justify-content: center;
     min-height: 100vh;
     font-size: 1.2rem;
-    color: #0D76B8;
+    color: #C49A1A;
 `;
 
 const ErrorContainer = styled.div`
@@ -25,49 +25,54 @@ const ErrorContainer = styled.div`
     justify-content: center;
     min-height: 100vh;
     font-size: 1rem;
-    color: #E23467;
+    color: #E8445A;
     padding: 2rem;
     text-align: center;
 `;
 
 const CTASection = styled.section`
     width: 100%;
-    padding: 5rem 2rem;
-    background: linear-gradient(135deg, #E23467 0%, #F2B924 100%);
+    padding: 6rem 2rem;
+    background: linear-gradient(135deg, #C49A1A 0%, #F2B924 50%, #F5C542 100%);
     text-align: center;
 `;
 
 const CTATitle = styled.h2`
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.2rem;
+    font-weight: 800;
     color: #FFFFFF;
     margin-bottom: 1rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+
+    @media (max-width: 768px) {
+        font-size: 1.6rem;
+    }
 `;
 
 const CTAText = styled.p`
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 2rem;
-    max-width: 500px;
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.92);
+    margin-bottom: 2.5rem;
+    max-width: 520px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.7;
 `;
 
 const CTAButton = styled(Link)`
     display: inline-block;
     padding: 1rem 3rem;
     background-color: #FFFFFF;
-    color: #E23467;
+    color: #1E1B16;
     text-decoration: none;
     border-radius: 2rem;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     transition: transform 0.2s, box-shadow 0.2s;
 
     &:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     }
 `;
 
@@ -127,7 +132,7 @@ export default function Home() {
                     Junte-se ao Cursinho Inserção e prepare-se para o ensino superior
                     com educação popular de qualidade.
                 </CTAText>
-                <CTAButton to="/admin/login">Acessar o Portal</CTAButton>
+                <CTAButton to="/portal/login">Acessar o Portal</CTAButton>
             </CTASection>
 
             <Footer />

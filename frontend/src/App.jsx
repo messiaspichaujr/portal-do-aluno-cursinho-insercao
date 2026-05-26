@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 // --- Páginas ---
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
-import AdminLogin from './pages/AdminLogin';
+import LoginPage from './pages/LoginPage';
 
 // --- Páginas de Administração ---
 import GerirBanners from './pages/admin/GerirBanners';
@@ -38,8 +38,8 @@ export default function App() {
                 <Route path="/" element={<Navigate to="/home" replace/>}/>
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/admin" element={<Navigate to="/admin/login" replace/>}/>
-                <Route path="/admin/login" element={<AdminLogin/>}/>
-                <Route path="/portal/login" element={<AdminLogin/>}/>
+                <Route path="/admin/login" element={<LoginPage/>}/>
+                <Route path="/portal/login" element={<LoginPage/>}/>
 
                 {/* ========== ROTAS PROTEGIDAS DO PAINEL DE ADMINISTRAÇÃO ========== */}
                 <Route element={<ProtectedRoute allowedRoles={[1]}/>}>
@@ -77,4 +77,3 @@ export default function App() {
         </BrowserRouter>
     );
 }
-

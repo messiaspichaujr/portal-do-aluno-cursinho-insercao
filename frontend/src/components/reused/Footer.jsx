@@ -5,20 +5,20 @@ import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 
 const FooterWrapper = styled.footer`
-    background-color: #0D76B8;
+    background-color: #1E1B16;
     color: #FFFFFF;
     padding: 0;
 `;
 
 const TopBar = styled.div`
     height: 4px;
-    background-color: #F2B924;
+    background: linear-gradient(90deg, #F2B924, #C49A1A);
 `;
 
 const FooterContent = styled.div`
     max-width: 1100px;
     margin: 0 auto;
-    padding: 3rem 2rem 1.5rem;
+    padding: 3.5rem 2rem 1.5rem;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     gap: 3rem;
@@ -45,18 +45,19 @@ const FooterTitle = styled.h4`
 const FooterText = styled.p`
     font-size: 0.9rem;
     line-height: 1.6;
-    opacity: 0.85;
+    opacity: 0.75;
 `;
 
 const FooterLink = styled(Link)`
     font-size: 0.9rem;
     color: #FFFFFF;
     text-decoration: none;
-    opacity: 0.85;
-    transition: opacity 0.2s;
+    opacity: 0.75;
+    transition: opacity 0.2s, color 0.2s;
 
     &:hover {
         opacity: 1;
+        color: #F2B924;
     }
 `;
 
@@ -64,14 +65,15 @@ const ExternalLink = styled.a`
     font-size: 0.9rem;
     color: #FFFFFF;
     text-decoration: none;
-    opacity: 0.85;
-    transition: opacity 0.2s;
+    opacity: 0.75;
+    transition: opacity 0.2s, color 0.2s;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 
     &:hover {
         opacity: 1;
+        color: #F2B924;
     }
 `;
 
@@ -88,7 +90,7 @@ const Divider = styled.div`
 
     hr {
         border: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        border-top: 1px solid rgba(242, 185, 36, 0.15);
     }
 `;
 
@@ -104,7 +106,7 @@ const BottomBar = styled.div`
 
     p {
         font-size: 0.8rem;
-        opacity: 0.7;
+        opacity: 0.6;
     }
 
     @media (max-width: 768px) {
@@ -117,7 +119,7 @@ const DevLink = styled.a`
     font-size: 0.8rem;
     color: #F2B924;
     text-decoration: none;
-    opacity: 0.8;
+    opacity: 0.7;
 
     &:hover {
         opacity: 1;

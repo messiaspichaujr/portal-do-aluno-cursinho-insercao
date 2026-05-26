@@ -1,6 +1,6 @@
 -- ============================================================
 -- Seed: Criação do usuário Admin inicial
--- Login: admin@cursinho.com / Senha: admin123
+-- Login: admin@cursinho.com / Senha: Pac4Finaly321!
 -- IMPORTANTE: Altere a senha após o primeiro login!
 -- ============================================================
 
@@ -12,4 +12,4 @@ INSERT IGNORE INTO `tipo_usuario` (`id`, `tipo`) VALUES
 
 -- Cria o usuário Admin (tipo=1, ativo=1)
 INSERT IGNORE INTO `usuario` (`id`, `tipo`, `nome`, `email`, `senha`, `ativo`) VALUES
-(1, 1, 'Administrador', 'admin@cursinho.com', '$2b$12$jBfXDWrDRR7xnMNOpjR.ZeWI3pmklVg8qcYxPdqSCCThAAntC1MRK', 1);
+(1, 1, 'Administrador', 'admin@cursinho.com', '$2a$12$2rjEbFAiKo8FhXRXt2vdGu0VfAlTdd8uUPixb9MtW4pd0XO3umpP2', 1);

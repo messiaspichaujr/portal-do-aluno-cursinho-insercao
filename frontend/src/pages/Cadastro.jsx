@@ -1,229 +1,223 @@
 import { useState } from "react";
-import { useNavigate, Link } from 'react-router-dom';
+import styled from "styled-components";
 import { api } from '../services/api';
-import styled from 'styled-components';
-import Navbar from "../components/reused/Navbar";
-import Footer from "../components/reused/Footer";
-import Botao from "../components/reused/Botao"
 
-// ========== STYLED COMPONENTS (Adaptados do Login) ==========
+const Page = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    align-content: center;
+    padding: 1rem;
+    height: 100%;
+    gap: 10px;
 
-const Container = styled.div`
-  font-family: 'Roboto';
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+    h1 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+        color: #C49A1A;
+    }
 `;
 
-const Main = styled.main`
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-`;
-
-const RegisterCard = styled.div`
-  background-color: #FEF8E9;
-  padding: 2.5rem;
-  border-radius: 1.5rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 30rem;
-  width: 100%;
-`;
-
-const Title = styled.h1`
-    color: #E23467;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+const Card = styled.div`
+    background-color: #FEF8E9;
+    padding: 2rem;
+    border-radius: 1rem;
+    max-width: 32rem;
+    width: 100%;
 `;
 
 const Form = styled.form`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
 `;
 
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const InputGroup = styled.div`
+    display: flex;
+    flex-direction: column;
 `;
 
 const Label = styled.label`
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #E23467;
-  margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4A453E;
+    margin-bottom: 0.35rem;
 `;
 
-const FormInput = styled.input`
-  width: 100%;
-  padding: 0.5rem 1rem;
-  border: 2px solid #0D76B8;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  color: #111827;
+const Input = styled.input`
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 2px solid #E8E2D6;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: #1E1B16;
+    background-color: #FAFAF7;
+    outline: none;
 
-  &:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5);
-  }
+    &:focus {
+        border-color: #F2B924;
+        box-shadow: 0 0 0 3px rgba(242, 185, 36, 0.15);
+        background-color: #FFFFFF;
+    }
 `;
 
-const SelectInput = styled.select`
-  width: 100%;
-  padding: 0.5rem 1rem;
-  border: 2px solid #0D76B8;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  color: #111827;
-  background-color: white;
+const Select = styled.select`
+    width: 100%;
+    padding: 0.65rem 1rem;
+    border: 2px solid #E8E2D6;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: #1E1B16;
+    background-color: #FAFAF7;
+    outline: none;
+    cursor: pointer;
 
-  &:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5);
-  }
+    &:focus {
+        border-color: #F2B924;
+        box-shadow: 0 0 0 3px rgba(242, 185, 36, 0.15);
+        background-color: #FFFFFF;
+    }
 `;
 
 const SubmitButton = styled.button`
-  width: 100%;
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #F2B924;
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 1.125rem;
-  border: none;
-  border-radius: 1rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.75rem;
+    background-color: #F2B924;
+    color: #1E1B16;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
 
-  &:disabled {
-    background-color: #ccc;
-  }
+    &:hover {
+        background-color: #C49A1A;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 `;
 
 const Message = styled.p`
-    color: ${props => (props.success ? '#28a745' : '#dc3545')};
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     text-align: center;
-`;
-
-const LoginLink = styled(Link)`
-    margin-top: 1.5rem;
     font-size: 0.9rem;
-    color: #007bff;
-    text-decoration: none;
-    &:hover {
-        text-decoration: underline;
-    }
+    color: ${props => (props.$success ? '#28a745' : '#dc3545')};
 `;
-
-// ========== COMPONENTE REACT ==========
 
 export default function Cadastro() {
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    senha: '',
-    tipo: 3
-  });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
-  const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        nome: '',
+        email: '',
+        senha: '',
+        tipo: 3
+    });
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState('');
+    const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: name === 'tipo' ? parseInt(value) : value
-    }));
-  };
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: name === 'tipo' ? parseInt(value) : value
+        }));
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setLoading(true);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setMessage('');
+        setLoading(true);
 
-    try {
-      await api.post('/api/usuarios', formData);
+        try {
+            await api.post('/api/usuarios', formData);
+            setIsSuccess(true);
+            setMessage('Usuário criado com sucesso!');
+            setFormData({ nome: '', email: '', senha: '', tipo: 3 });
+        } catch (err) {
+            console.error("Erro no cadastro:", err);
+            setIsSuccess(false);
+            setMessage(err.response?.data || 'Erro ao criar usuário. Tente novamente.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      setIsSuccess(true);
-      setMessage('Cadastro realizado com sucesso! A redirecionar para o login...');
+    return (
+        <Page>
+            <h1>Novo Usuário</h1>
+            <Card>
+                <Form onSubmit={handleSubmit}>
+                    <InputGroup>
+                        <Label htmlFor="nome">Nome Completo</Label>
+                        <Input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            value={formData.nome}
+                            onChange={handleChange}
+                            required
+                        />
+                    </InputGroup>
 
-      setTimeout(() => {
-        navigate('/admin');
-      }, 3000);
+                    <InputGroup>
+                        <Label htmlFor="email">E-mail</Label>
+                        <Input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </InputGroup>
 
-    } catch (err) {
-      console.error("Erro no cadastro:", err);
-      setIsSuccess(false);
-      setMessage(err.response?.data || 'Erro ao realizar o cadastro. Tente novamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
+                    <InputGroup>
+                        <Label htmlFor="senha">Senha</Label>
+                        <Input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            value={formData.senha}
+                            onChange={handleChange}
+                            required
+                            minLength={6}
+                        />
+                    </InputGroup>
 
-  return (
-    <Container>
-      <Navbar />
-      <Main>
-        <RegisterCard>
-          <Title>Criar Conta</Title>
-          <Form onSubmit={handleSubmit}>
+                    <InputGroup>
+                        <Label htmlFor="tipo">Tipo de Usuário</Label>
+                        <Select id="tipo" name="tipo" value={formData.tipo} onChange={handleChange}>
+                            <option value={3}>Aluno</option>
+                            <option value={2}>Professor</option>
+                        </Select>
+                    </InputGroup>
 
-            <InputContainer>
-              <Label htmlFor="nome">Nome Completo</Label>
-              <FormInput type="text" id="nome" name="nome" value={formData.nome} onChange={handleChange} required />
-            </InputContainer>
+                    {formData.tipo === 2 && (
+                        <InputGroup>
+                            <Label>Área do Conhecimento</Label>
+                            <Select id="areaConhecimento" name="areaConhecimento" onChange={handleChange}>
+                                <option value="Ciências da Natureza e Suas Tecnologias">Ciências da Natureza e Suas Tecnologias</option>
+                                <option value="Ciências Humanas e Suas Tecnologias">Ciências Humanas e Suas Tecnologias</option>
+                                <option value="Linguagens e Suas Tecnologias">Linguagens e Suas Tecnologias</option>
+                                <option value="Matemática e Suas Tecnologias">Matemática e Suas Tecnologias</option>
+                                <option value="Redação">Redação</option>
+                            </Select>
+                        </InputGroup>
+                    )}
 
-            <InputContainer>
-              <Label htmlFor="email">E-mail</Label>
-              <FormInput type="email" id="email" name="email" value={formData.email} onChange={handleChange} required />
-            </InputContainer>
+                    <SubmitButton type="submit" disabled={loading}>
+                        {loading ? 'Criando...' : 'Criar Usuário'}
+                    </SubmitButton>
 
-            <InputContainer>
-              <Label htmlFor="senha">Senha</Label>
-              <FormInput type="password" id="senha" name="senha" value={formData.senha} onChange={handleChange} required minLength={6} />
-            </InputContainer>
-
-            <InputContainer>
-                <Label htmlFor="tipo">Eu sou</Label>
-                <SelectInput id="tipo" name="tipo" value={formData.tipo} onChange={handleChange}>
-                    <option value={3}>Aluno</option>
-                    <option value={2}>Professor</option>
-                </SelectInput>
-            </InputContainer>
-
-            {formData.tipo === 2 && (
-                <InputContainer>
-                    <Label>Qual a sua área do conhecimento?</Label>
-                    <SelectInput id="areaConhecimento" name="areaConhecimento" onChange={handleChange}>
-                        <option value="Ciências da Natureza e Suas Tecnologias">Ciências da Natureza e Suas Tecnologias</option>
-                        <option value="Ciências Humanas e Suas Tecnologias">Ciências Humanas e Suas Tecnologias</option>
-                        <option value="Linguagens e Suas Tecnologias">Linguagens e Suas Tecnologias</option>
-                        <option value="Matemática e Suas Tecnologias">Matemática e Suas Tecnologias</option>
-                        <option value="Redação">Redação</option>
-                    </SelectInput>
-                </InputContainer>
-            )}
-
-            <SubmitButton type="submit" disabled={loading}>
-              {loading ? 'A registrar...' : 'Registrar'}
-            </SubmitButton>
-
-            {message && <Message success={isSuccess}>{message}</Message>}
-          </Form>
-          <LoginLink to="/admin">Já tem uma conta? Faça login</LoginLink>
-        </RegisterCard>
-      </Main>
-      <Footer/>
-    </Container>
-  );
+                    {message && <Message $success={isSuccess}>{message}</Message>}
+                </Form>
+            </Card>
+        </Page>
+    );
 }

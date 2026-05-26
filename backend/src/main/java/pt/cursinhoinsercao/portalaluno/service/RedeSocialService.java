@@ -34,7 +34,7 @@ public class RedeSocialService {
         }
 
         if (novaRede.getImagem() == null || novaRede.getImagem().trim().isEmpty()) {
-            throw new Exception("A imagem da rede social não pode ser vazia");
+            novaRede.setImagem(null);
         }
 
         redeDAO.salvar(novaRede);

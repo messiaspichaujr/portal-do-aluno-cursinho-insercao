@@ -39,6 +39,18 @@ public class AvaliacaoDAO {
         }
     }
 
+    public List<Avaliacao> buscarPorDisciplina(int disciplinaId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Avaliacao> query = em.createQuery(
+                "SELECT a FROM Avaliacao a WHERE a.disciplina = :disciplinaId", Avaliacao.class);
+            query.setParameter("disciplinaId", disciplinaId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public void atualizar(Avaliacao avaliacao) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

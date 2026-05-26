@@ -25,6 +25,10 @@ public class AvaliacaoService {
         return avaliacaoDAO.buscarTodos();
     }
 
+    public List<Avaliacao> buscarPorDisciplina(int disciplinaId) {
+        return avaliacaoDAO.buscarPorDisciplina(disciplinaId);
+    }
+
     public void atualizar(Avaliacao avaliacao) throws Exception {
         Avaliacao existente = avaliacaoDAO.buscarPorId(avaliacao.getId());
         if (existente == null) {

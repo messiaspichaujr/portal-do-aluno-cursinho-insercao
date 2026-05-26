@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.dao.UsuarioDAO;
 import pt.cursinhoinsercao.portalaluno.dto.Login;
+import pt.cursinhoinsercao.portalaluno.entity.Disciplina;
+import pt.cursinhoinsercao.portalaluno.entity.DisciplinaAluno;
 import pt.cursinhoinsercao.portalaluno.entity.Usuario;
 import pt.cursinhoinsercao.portalaluno.util.PasswordUtil;
 
@@ -15,6 +17,8 @@ public class UsuarioService {
 
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
     private TokenService tokenService = new TokenService();
+    private DisciplinaService disciplinaService = new DisciplinaService();
+    private DisciplinaAlunoService disciplinaAlunoService = new DisciplinaAlunoService();
 
     public Usuario cadastrar(Usuario novoUsuario) throws Exception {
 
@@ -102,6 +106,21 @@ public class UsuarioService {
         if (usuario != null && usuario.getTipo() == 3) {
             usuario.setAtivo(true);
             usuarioDAO.atualizar(usuario);
+            matricularEmTodasDisciplinas(usuario.getId());
+        }
+    }
+
+    private void matricularEmTodasDisciplinas(int alunoId) {
+        try {
+            List<Disciplina> disciplinas = disciplinaService.buscarTodos();
+            for (Disciplina d : disciplinas) {
+                DisciplinaAluno da = new DisciplinaAluno();
+                da.setAluno(alunoId);
+                da.setDisciplina(d.getId());
+                disciplinaAlunoService.matricular(da);
+            }
+        } catch (Exception e) {
+            logger.error("Erro ao matricular aluno {} nas disciplinas: {}", alunoId, e.getMessage());
         }
     }
 

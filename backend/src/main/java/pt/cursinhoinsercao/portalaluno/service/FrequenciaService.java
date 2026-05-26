@@ -31,6 +31,20 @@ public class FrequenciaService {
         return frequenciaDAO.buscarTodos();
     }
 
+    public List<Frequencia> buscarPorDisciplina(int disciplinaId) {
+        return frequenciaDAO.buscarPorDisciplina(disciplinaId);
+    }
+
+    public List<Frequencia> buscarPorAlunoEDisciplina(int alunoId, int disciplinaId) {
+        return frequenciaDAO.buscarPorAlunoEDisciplina(alunoId, disciplinaId);
+    }
+
+    public void lancarLote(List<Frequencia> frequencias) throws Exception {
+        for (Frequencia f : frequencias) {
+            lancar(f);
+        }
+    }
+
     public void remover(int id) throws Exception {
         Frequencia existente = frequenciaDAO.buscarPorId(id);
         if (existente == null) {

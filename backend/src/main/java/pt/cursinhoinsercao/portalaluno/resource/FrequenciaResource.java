@@ -35,6 +35,26 @@ public class FrequenciaResource {
     }
 
     @GET
+    @Path("/disciplina/{disciplinaId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    public Response buscarPorDisciplina(@PathParam("disciplinaId") int disciplinaId) {
+        List<Frequencia> frequencias = frequenciaService.buscarPorDisciplina(disciplinaId);
+        return Response.ok(frequencias).build();
+    }
+
+    @GET
+    @Path("/aluno/{alunoId}/disciplina/{disciplinaId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    public Response buscarPorAlunoEDisciplina(
+            @PathParam("alunoId") int alunoId,
+            @PathParam("disciplinaId") int disciplinaId) {
+        List<Frequencia> frequencias = frequenciaService.buscarPorAlunoEDisciplina(alunoId, disciplinaId);
+        return Response.ok(frequencias).build();
+    }
+
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Seguranca
     @ProfessorOnly
@@ -52,6 +72,21 @@ public class FrequenciaResource {
         try {
             Frequencia lancada = frequenciaService.lancar(frequencia);
             return Response.status(Response.Status.CREATED).entity(lancada).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("/lote")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    @ProfessorOnly
+    public Response lancarLote(List<Frequencia> frequencias) {
+        try {
+            frequenciaService.lancarLote(frequencias);
+            return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }

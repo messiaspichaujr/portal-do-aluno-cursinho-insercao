@@ -64,6 +64,32 @@ public class FrequenciaDAO {
         }
     }
 
+    public List<Frequencia> buscarPorDisciplina(int disciplinaId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Frequencia> query = em.createQuery(
+                "SELECT f FROM Frequencia f WHERE f.disciplina = :disciplinaId ORDER BY f.data DESC", Frequencia.class);
+            query.setParameter("disciplinaId", disciplinaId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Frequencia> buscarPorAlunoEDisciplina(int alunoId, int disciplinaId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Frequencia> query = em.createQuery(
+                "SELECT f FROM Frequencia f WHERE f.aluno = :alunoId AND f.disciplina = :disciplinaId ORDER BY f.data DESC",
+                Frequencia.class);
+            query.setParameter("alunoId", alunoId);
+            query.setParameter("disciplinaId", disciplinaId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public void remover(int id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

@@ -43,6 +43,14 @@ public class NotaService {
         return notaDAO.buscarTodos();
     }
 
+    public List<Nota> buscarPorAlunoEDisciplina(int alunoId, int disciplinaId) {
+        return notaDAO.buscarPorAlunoEDisciplina(alunoId, disciplinaId);
+    }
+
+    public List<Nota> buscarPorDisciplina(int disciplinaId) {
+        return notaDAO.buscarPorDisciplina(disciplinaId);
+    }
+
     public void remover(int id) throws Exception {
         Nota existente = notaDAO.buscarPorId(id);
         if (existente == null) {

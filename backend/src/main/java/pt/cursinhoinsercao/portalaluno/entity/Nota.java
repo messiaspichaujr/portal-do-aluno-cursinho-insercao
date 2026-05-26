@@ -19,6 +19,9 @@ public class Nota {
     @Column(name = "nota", nullable = false)
     private double nota;
 
+    @Column(name = "disciplina")
+    private Integer disciplina;
+
     public Nota() {}
 
     public int getId() { return id; }
@@ -29,4 +32,6 @@ public class Nota {
     public void setAvaliacao(int avaliacao) { this.avaliacao = avaliacao; }
     public double getNota() { return nota; }
     public void setNota(double nota) { this.nota = nota; }
+    public Integer getDisciplina() { return disciplina; }
+    public void setDisciplina(Integer disciplina) { this.disciplina = disciplina; }
 }

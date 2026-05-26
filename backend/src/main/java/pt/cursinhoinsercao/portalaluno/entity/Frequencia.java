@@ -23,6 +23,9 @@ public class Frequencia {
     @Column(name = "justificativa", nullable = false)
     private String justificativa;
 
+    @Column(name = "disciplina")
+    private Integer disciplina;
+
     public Frequencia() {}
 
     public int getId() { return id; }
@@ -35,4 +38,6 @@ public class Frequencia {
     public void setFrequencia(int frequencia) { this.frequencia = frequencia; }
     public String getJustificativa() { return justificativa; }
     public void setJustificativa(String justificativa) { this.justificativa = justificativa; }
+    public Integer getDisciplina() { return disciplina; }
+    public void setDisciplina(Integer disciplina) { this.disciplina = disciplina; }
 }

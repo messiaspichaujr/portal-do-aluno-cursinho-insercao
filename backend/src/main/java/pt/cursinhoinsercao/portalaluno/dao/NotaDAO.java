@@ -74,6 +74,31 @@ public class NotaDAO {
         }
     }
 
+    public List<Nota> buscarPorAlunoEDisciplina(int alunoId, int disciplinaId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Nota> query = em.createQuery(
+                "SELECT n FROM Nota n WHERE n.aluno = :alunoId AND n.disciplina = :disciplinaId", Nota.class);
+            query.setParameter("alunoId", alunoId);
+            query.setParameter("disciplinaId", disciplinaId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Nota> buscarPorDisciplina(int disciplinaId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Nota> query = em.createQuery(
+                "SELECT n FROM Nota n WHERE n.disciplina = :disciplinaId", Nota.class);
+            query.setParameter("disciplinaId", disciplinaId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public void atualizar(Nota nota) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

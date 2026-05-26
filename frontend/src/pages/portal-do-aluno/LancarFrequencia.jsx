@@ -1,130 +1,456 @@
 import styled from 'styled-components';
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import Botao from '../../components/reused/Botao';
 
-const Div = styled.div`
-    display: flex; flex-direction: column; text-align: left;
-    align-content: center; padding: 1rem; height: 100%; gap: 10px;
-    h1 { margin-top: 0; margin-bottom: 1rem; font-size: 1.4rem; color: #0D76B8; }
+const colors = {
+    dark: '#1E1B16',
+    primary: '#F2B924',
+    accent: '#C49A1A',
+    cream: '#FEF8E9',
+    text: '#4A453E',
+    error: '#E8445A',
+    border: '#E8E2D6',
+};
+
+const Page = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 1.5rem;
+    height: 100%;
+    gap: 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
 `;
 
-const ManagementDiv = styled.section`
-    background-color: #FEF8E9; padding: 2rem; border-radius: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem;
-    h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: #0D76B8; }
+const Title = styled.h1`
+    margin: 0;
+    font-size: 1.5rem;
+    color: ${colors.dark};
+    font-weight: 700;
 `;
 
-const Form = styled.div`
-    display: flex; flex-direction: column; padding: 2rem 0; width: 100%;
-    flex-grow: 1; border-radius: 1rem; gap: 1rem; align-items: center;
+const Card = styled.section`
+    background: ${colors.cream};
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid ${colors.border};
 `;
 
-const Input = styled.input`
-    font-size: 1rem; width: 100%; padding: 0.75rem; border: 2px solid #0D76B8;
-    border-radius: 1rem; color: #000; background-color: #FFF;
+const CardTitle = styled.h2`
+    margin: 0 0 1.25rem 0;
+    font-size: 1.1rem;
+    color: ${colors.dark};
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 `;
 
-const ListDiv = styled.div`
-    display: flex; flex-direction: column; width: 100%; gap: 2rem;
+const Row = styled.div`
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: stretch;
+    }
 `;
 
-const Card = styled.div`
-    background-color: #FFF; border: 1px solid #0D76B8; border-radius: 8px;
-    padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
-`;
-
-const InfoDiv = styled.div`
-    display: flex; align-items: center; gap: 1rem;
-    h3 { margin: 0; font-size: 1rem; color: #333; }
+const Label = styled.label`
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: ${colors.text};
+    margin-bottom: 0.35rem;
+    display: block;
 `;
 
 const Select = styled.select`
-    padding: 0.5rem; border: 2px solid #0D76B8; border-radius: 0.5rem; color: #000;
+    font-size: 0.95rem;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 2px solid ${colors.border};
+    border-radius: 0.75rem;
+    color: ${colors.text};
+    background-color: #FFF;
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: ${colors.primary};
+    }
+`;
+
+const Input = styled.input`
+    font-size: 0.95rem;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 2px solid ${colors.border};
+    border-radius: 0.75rem;
+    color: ${colors.text};
+    background-color: #FFF;
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: ${colors.primary};
+    }
+
+    &:disabled {
+        background-color: #f5f0e6;
+        color: #999;
+        cursor: not-allowed;
+    }
+`;
+
+const FieldGroup = styled.div`
+    flex: 1;
+    min-width: 180px;
+`;
+
+const TableWrapper = styled.div`
+    overflow-x: auto;
+    margin-top: 1rem;
+`;
+
+const Table = styled.table`
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
+
+    thead th {
+        background: ${colors.dark};
+        color: ${colors.cream};
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-weight: 600;
+        white-space: nowrap;
+
+        &:first-child { border-radius: 0.5rem 0 0 0; }
+        &:last-child { border-radius: 0 0.5rem 0 0; }
+    }
+
+    tbody tr {
+        &:nth-child(even) { background: rgba(242,185,36,0.06); }
+        &:hover { background: rgba(242,185,36,0.12); }
+    }
+
+    tbody td {
+        padding: 0.65rem 1rem;
+        border-bottom: 1px solid ${colors.border};
+        vertical-align: middle;
+        color: ${colors.text};
+    }
+`;
+
+const ToggleWrapper = styled.label`
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: ${colors.text};
+`;
+
+const ToggleTrack = styled.span`
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: ${props => (props.$active ? colors.primary : colors.border)};
+    border-radius: 12px;
+    transition: background 0.25s;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: ${props => (props.$active ? '23px' : '3px')};
+        width: 18px;
+        height: 18px;
+        background: #FFF;
+        border-radius: 50%;
+        transition: left 0.25s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+`;
+
+const HiddenCheckbox = styled.input`
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+`;
+
+const JustificativaInput = styled(Input)`
+    font-size: 0.85rem;
+    padding: 0.45rem 0.7rem;
+`;
+
+const StatusBadge = styled.span`
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #FFF;
+    background: ${props => (props.$present ? colors.primary : colors.error)};
+`;
+
+const EmptyState = styled.div`
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: ${colors.text};
+    font-size: 0.95rem;
+    opacity: 0.7;
+`;
+
+const LoadingOverlay = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: ${colors.text};
+    font-size: 1rem;
+`;
+
+const SuccessBanner = styled.div`
+    background: rgba(242,185,36,0.15);
+    border: 1px solid ${colors.primary};
+    color: ${colors.dark};
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
 `;
 
 export default function LancarFrequencia() {
-    const [alunos, setAlunos] = useState([]);
+    const [disciplinas, setDisciplinas] = useState([]);
+    const [disciplinaId, setDisciplinaId] = useState('');
+    const [alunosMatriculados, setAlunosMatriculados] = useState([]);
+    const [todosAlunos, setTodosAlunos] = useState([]);
     const [tiposFrequencia, setTiposFrequencia] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState(new Date().toISOString().split("T")[0]);
+    const [data, setData] = useState(new Date().toISOString().split('T')[0]);
     const [presencas, setPresencas] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [success, setSuccess] = useState('');
 
     useEffect(() => {
+        setLoading(true);
         Promise.all([
+            api.get('/api/disciplinas'),
             api.get('/api/usuarios/alunos/matriculados'),
-            api.get('/api/frequencias/tipos')
-        ]).then(([resAlunos, resTipos]) => {
-            setAlunos(resAlunos.data);
-            setTiposFrequencia(resTipos.data);
-            setPresencas(resAlunos.data.map(a => ({ alunoId: a.id, nome: a.nome, frequencia: '', justificativa: '' })));
-        }).catch(err => {
-            console.error('Erro ao carregar dados:', err);
-        }).finally(() => setLoading(false));
+            api.get('/api/frequencias/tipos'),
+        ])
+            .then(([resDisc, resAlunos, resTipos]) => {
+                setDisciplinas(resDisc.data);
+                setTodosAlunos(resAlunos.data);
+                setTiposFrequencia(resTipos.data);
+            })
+            .catch((err) => console.error('Erro ao carregar dados:', err))
+            .finally(() => setLoading(false));
     }, []);
 
-    async function handleSave() {
-        const aLancar = presencas.filter(p => p.frequencia);
-        if (aLancar.length === 0) { alert('Selecione ao menos uma presença.'); return; }
-        try {
-            for (const p of aLancar) {
-                await api.post('/api/frequencias', {
-                    aluno: p.alunoId,
-                    data: new Date(data).toISOString(),
-                    frequencia: parseInt(p.frequencia),
-                    justificativa: p.justificativa || ''
-                });
-            }
-            alert('Frequência lançada com sucesso!');
-            setPresencas(alunos.map(a => ({ alunoId: a.id, nome: a.nome, frequencia: '', justificativa: '' })));
-        } catch (err) {
-            alert(err.response?.data || 'Erro ao lançar frequência.');
+    useEffect(() => {
+        if (!disciplinaId) {
+            setAlunosMatriculados([]);
+            setPresencas([]);
+            return;
         }
-    }
+        api.get(`/api/matriculas-disciplina/disciplina/${disciplinaId}`)
+            .then((res) => {
+                const matriculas = res.data;
+                const enriched = matriculas.map((m) => {
+                    const alunoInfo = todosAlunos.find((a) => a.id === m.aluno);
+                    return {
+                        alunoId: m.aluno,
+                        nome: alunoInfo ? alunoInfo.nome : `Aluno #${m.aluno}`,
+                        matriculaId: m.id,
+                    };
+                });
+                enriched.sort((a, b) => a.nome.localeCompare(b.nome));
+                setAlunosMatriculados(enriched);
+                setPresencas(
+                    enriched.map((a) => ({
+                        alunoId: a.alunoId,
+                        nome: a.nome,
+                        presente: true,
+                        justificativa: '',
+                    }))
+                );
+            })
+            .catch((err) => console.error('Erro ao buscar matriculas:', err));
+    }, [disciplinaId, todosAlunos]);
 
-    const handleChange = (index, field, value) => {
+    const handleToggle = (index) => {
         const novas = [...presencas];
-        novas[index][field] = value;
+        novas[index].presente = !novas[index].presente;
+        if (novas[index].presente) {
+            novas[index].justificativa = '';
+        }
         setPresencas(novas);
     };
 
-    if (loading) return <Div><p>Carregando...</p></Div>;
+    const handleJustificativa = (index, value) => {
+        const novas = [...presencas];
+        novas[index].justificativa = value;
+        setPresencas(novas);
+    };
+
+    async function handleSave() {
+        if (!disciplinaId) {
+            alert('Selecione uma disciplina.');
+            return;
+        }
+        if (!data) {
+            alert('Selecione uma data.');
+            return;
+        }
+
+        const tipoPresente = tiposFrequencia.find((t) => t.tipo === 'Presente');
+        const tipoFalta = tiposFrequencia.find((t) => t.tipo === 'Falta');
+
+        if (!tipoPresente || !tipoFalta) {
+            alert('Tipos de frequencia nao encontrados. Verifique o cadastro de tipos.');
+            return;
+        }
+
+        const lote = presencas.map((p) => ({
+            aluno: p.alunoId,
+            data: new Date(data + 'T12:00:00').toISOString(),
+            frequencia: p.presente ? tipoPresente.id : tipoFalta.id,
+            justificativa: p.presente ? '' : p.justificativa || '',
+            disciplina: parseInt(disciplinaId),
+        }));
+
+        setSaving(true);
+        setSuccess('');
+        try {
+            await api.post('/api/frequencias/lote', lote);
+            setSuccess('Frequencia lancada com sucesso!');
+            setPresencas(
+                alunosMatriculados.map((a) => ({
+                    alunoId: a.alunoId,
+                    nome: a.nome,
+                    presente: true,
+                    justificativa: '',
+                }))
+            );
+        } catch (err) {
+            alert(err.response?.data?.message || 'Erro ao lancar frequencia.');
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    if (loading) {
+        return (
+            <Page>
+                <LoadingOverlay>Carregando...</LoadingOverlay>
+            </Page>
+        );
+    }
 
     return (
-        <Div>
-            <h1>Lançar Frequência</h1>
+        <Page>
+            <Title>Lancar Frequencia</Title>
 
-            <ManagementDiv>
-                <h2>Data</h2>
-                <Form>
-                    <Input type="date" value={data} onChange={(e) => setData(e.target.value)} />
-                </Form>
-            </ManagementDiv>
+            {success && <SuccessBanner>{success}</SuccessBanner>}
 
-            <ManagementDiv>
-                <h2>Presença por Aluno</h2>
-                <ListDiv>
-                    {presencas.map((p, index) => (
-                        <Card key={p.alunoId}>
-                            <InfoDiv><h3>{p.nome}</h3></InfoDiv>
-                            <div style={{ display: "flex", gap: "0.5rem", width: "60%" }}>
-                                <Select value={p.frequencia}
-                                    onChange={(e) => handleChange(index, "frequencia", e.target.value)}>
-                                    <option value="">Selecione</option>
-                                    {tiposFrequencia.map(t => (
-                                        <option key={t.id} value={t.id}>{t.tipo}</option>
-                                    ))}
-                                </Select>
-                                <Input type="text" placeholder="Justificativa"
-                                    value={p.justificativa}
-                                    onChange={(e) => handleChange(index, "justificativa", e.target.value)} />
-                            </div>
-                        </Card>
-                    ))}
-                    <Botao text="Salvar" onClick={handleSave}
-                        disabled={!presencas.some(p => p.frequencia)} />
-                </ListDiv>
-            </ManagementDiv>
-        </Div>
+            <Card>
+                <CardTitle>Configuracao</CardTitle>
+                <Row>
+                    <FieldGroup>
+                        <Label>Disciplina</Label>
+                        <Select
+                            value={disciplinaId}
+                            onChange={(e) => setDisciplinaId(e.target.value)}
+                        >
+                            <option value="">Selecione uma disciplina</option>
+                            {disciplinas.map((d) => (
+                                <option key={d.id} value={d.id}>
+                                    {d.sigla} - {d.nome}
+                                </option>
+                            ))}
+                        </Select>
+                    </FieldGroup>
+                    <FieldGroup>
+                        <Label>Data</Label>
+                        <Input
+                            type="date"
+                            value={data}
+                            onChange={(e) => setData(e.target.value)}
+                        />
+                    </FieldGroup>
+                </Row>
+            </Card>
+
+            {disciplinaId && alunosMatriculados.length > 0 && (
+                <Card>
+                    <CardTitle>
+                        Presencas ({alunosMatriculados.length} aluno{alunosMatriculados.length !== 1 ? 's' : ''})
+                    </CardTitle>
+                    <TableWrapper>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>Aluno</th>
+                                    <th>Presenca</th>
+                                    <th>Justificativa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {presencas.map((p, index) => (
+                                    <tr key={p.alunoId}>
+                                        <td style={{ fontWeight: 500 }}>{p.nome}</td>
+                                        <td>
+                                            <ToggleWrapper>
+                                                <HiddenCheckbox
+                                                    type="checkbox"
+                                                    checked={p.presente}
+                                                    onChange={() => handleToggle(index)}
+                                                />
+                                                <ToggleTrack $active={p.presente} />
+                                                <StatusBadge $present={p.presente}>
+                                                    {p.presente ? 'Presente' : 'Falta'}
+                                                </StatusBadge>
+                                            </ToggleWrapper>
+                                        </td>
+                                        <td>
+                                            <JustificativaInput
+                                                type="text"
+                                                placeholder="Justificativa (opcional)"
+                                                value={p.justificativa}
+                                                onChange={(e) => handleJustificativa(index, e.target.value)}
+                                                disabled={p.presente}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </TableWrapper>
+                    <Botao
+                        text={saving ? 'Salvando...' : 'Salvar Frequencia'}
+                        onClick={handleSave}
+                        disabled={saving}
+                    />
+                </Card>
+            )}
+
+            {disciplinaId && alunosMatriculados.length === 0 && (
+                <Card>
+                    <EmptyState>
+                        Nenhum aluno matriculado nesta disciplina.
+                    </EmptyState>
+                </Card>
+            )}
+        </Page>
     );
 }

@@ -7,7 +7,7 @@ import logo from '../../assets/imgs/logo_sem_fundo.png';
 const SidebarContainer = styled.aside`
   width: 323px;
   height: 100vh;
-  background-color: #F2B924;
+  background-color: #1E1B16;
   height: 100%;
   position: fixed;
   left: 0;
@@ -15,7 +15,7 @@ const SidebarContainer = styled.aside`
   display: flex;
   flex-direction: column;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   font-family: 'Roboto', sans-serif;
 
@@ -53,7 +53,7 @@ const Logo = styled.img`
 const ToggleButton = styled.button`
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(242, 185, 36, 0.1);
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -66,14 +66,14 @@ const ToggleButton = styled.button`
   outline: none;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(242, 185, 36, 0.2);
   }
 `;
 
 const HamburgerLine = styled.span`
   width: 20px;
   height: 2px;
-  background-color: #E1346A;
+  background-color: #F2B924;
   border-radius: 2px;
 `;
 
@@ -102,7 +102,7 @@ const GroupHeader = styled.div`
   user-select: none;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(242, 185, 36, 0.1);
   }
 
   .collapsed & {
@@ -110,15 +110,15 @@ const GroupHeader = styled.div`
     height: 50px;
     justify-content: center;
     padding: 12px;
-    
+
     &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
+        background-color: rgba(242, 185, 36, 0.15);
     }
   }
 `;
 
 const GroupTitle = styled.span`
-  color: #E1346A;
+  color: #F2B924;
   font-weight: 600;
   font-size: 15px;
   white-space: nowrap;
@@ -129,7 +129,7 @@ const GroupTitle = styled.span`
 `;
 
 const ExpandIcon = styled.span`
-  color: #E1346A;
+  color: #F2B924;
   font-size: 12px;
   transition: transform 0.3s ease;
   transform: ${props => (props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
@@ -152,7 +152,7 @@ const Submenu = styled.ul`
   max-height: ${props => (props.$isOpen ? '500px' : '0')};
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(242, 185, 36, 0.05);
   margin: 8px 0 0 0;
   border-radius: 8px;
   padding-left: 0;
@@ -165,17 +165,19 @@ const Submenu = styled.ul`
 const SubmenuItem = styled(NavLink)`
   display: block;
   padding: 12px 24px 12px 40px;
-  color: #FFFFFF;
+  color: #E8E2D6;
   text-decoration: none;
   font-size: 14px;
   transition: all 0.2s ease;
-  
+
   &:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(242, 185, 36, 0.1);
+    color: #FFF;
   }
 
   &.active {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(242, 185, 36, 0.15);
+    color: #F2B924;
     font-weight: 500;
   }
 `;
@@ -183,7 +185,7 @@ const SubmenuItem = styled(NavLink)`
 const LogoutContainer = styled.div`
   padding: 25px;
   flex-shrink: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(242, 185, 36, 0.15);
 `;
 
 const LogoutButton = styled.button`
@@ -195,7 +197,7 @@ const LogoutButton = styled.button`
   background-color: transparent;
   border: none;
   border-radius: 8px;
-  color: #FFFFFF;
+  color: #E8E2D6;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -203,8 +205,8 @@ const LogoutButton = styled.button`
   justify-content: flex-start;
 
   &:hover {
-    background-color: #FFFFFF;
-    color: #F2B924;
+    background-color: #F2B924;
+    color: #1E1B16;
   }
 
   .collapsed & {
@@ -225,7 +227,7 @@ const DropdownGroup = ({ title, icon, children, isCollapsed }) => {
         <MenuGroup>
             <GroupHeader className={isCollapsed ? 'collapsed' : ''} onClick={() => setIsOpen(!isOpen)}>
                 <GroupTitle>{title}</GroupTitle>
-                <ExpandIcon $isOpen={isOpen}>▼</ExpandIcon>
+                <ExpandIcon $isOpen={isOpen}>&#9660;</ExpandIcon>
                 <IconDisplay>{icon}</IconDisplay>
             </GroupHeader>
             <Submenu $isOpen={isOpen} className={isCollapsed ? 'collapsed' : ''}>
@@ -256,21 +258,21 @@ export default function PortalSidebar({ isCollapsed, toggleSidebar }) {
   };
 
   const menuGroups = [
-    { id: 1, title: 'Recados gerais', icon: '📝', submenu: [
+    { id: 1, title: 'Recados Gerais', icon: '📝', submenu: [
         { title: 'Recados', to: '/portal/recados' },
-        { title: 'Conteúdos', to: '/portal/conteudos' }
+        { title: 'Conteudos', to: '/portal/conteudos' }
     ]},
-    ...(isProf ? [{ id: 2, title: 'Frequência', icon: '📅', submenu: [
-        { title: 'Verificar frequência', to: '/portal/frequencia/ver' },
-        { title: 'Lançar frequência', to: '/portal/frequencia' }
-    ]}] : [{ id: 2, title: 'Frequência', icon: '📅', submenu: [
-        { title: 'Verificar frequência', to: '/portal/frequencia/ver' }
+    ...(isProf ? [{ id: 2, title: 'Frequencia', icon: '📅', submenu: [
+        { title: 'Lancar Frequencia', to: '/portal/frequencia' },
+        { title: 'Ver Frequencia', to: '/portal/frequencia/ver' }
+    ]}] : [{ id: 2, title: 'Frequencia', icon: '📅', submenu: [
+        { title: 'Ver Frequencia', to: '/portal/frequencia/ver' }
     ]}]),
     ...(isProf ? [{ id: 3, title: 'Notas', icon: '🎓', submenu: [
-        { title: 'Gerir avaliações', to: '/portal/avaliacoes'},
-        { title: 'Ver notas', to: '/portal/notas'}
+        { title: 'Gerir Avaliacoes', to: '/portal/avaliacoes'},
+        { title: 'Minhas Notas', to: '/portal/notas'}
     ]}] : [{ id: 3, title: 'Notas', icon: '🎓', submenu: [
-        { title: 'Ver notas', to: '/portal/notas'}
+        { title: 'Minhas Notas', to: '/portal/notas'}
     ]}])
   ];
 
@@ -302,7 +304,7 @@ export default function PortalSidebar({ isCollapsed, toggleSidebar }) {
       <LogoutContainer className={isCollapsed ? 'collapsed' : ''}>
         <LogoutButton onClick={handleLogout}>
           <LogoutText>Sair</LogoutText>
-          <span>➔</span>
+          <span>&#10132;</span>
         </LogoutButton>
       </LogoutContainer>
     </SidebarContainer>

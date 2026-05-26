@@ -8,13 +8,14 @@ import Botao from '../../components/reused/Botao';
 const Div = styled.div`
     display: flex; flex-direction: column; text-align: left;
     align-content: center; padding: 1rem; height: 100%; gap: 10px;
-    h1 { margin-top: 0; margin-bottom: 1rem; font-size: 1.4rem; color: #0D76B8; }
+    h1 { margin-top: 0; margin-bottom: 1rem; font-size: 1.4rem; color: #1E1B16; }
 `;
 
 const ManagementDiv = styled.section`
     background-color: #FEF8E9; padding: 2rem; border-radius: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem;
-    h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: #0D76B8; }
+    box-shadow: 0 2px 8px rgba(30, 27, 22, 0.06); margin-bottom: 2rem;
+    border: 1px solid #E8E2D6;
+    h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: #1E1B16; }
 `;
 
 const Form = styled.div`
@@ -23,44 +24,54 @@ const Form = styled.div`
 `;
 
 const Textarea = styled.textarea`
-    width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px;
-    min-height: 120px; resize: vertical;
+    width: 100%; padding: 0.8rem; border: 1px solid #E8E2D6; border-radius: 8px;
+    min-height: 120px; resize: vertical; font-family: inherit; font-size: 0.9rem;
+    background-color: #FFF; color: #4A453E;
+    &:focus { outline: none; border-color: #C49A1A; box-shadow: 0 0 0 2px rgba(196, 154, 26, 0.15); }
 `;
 
 const InputImg = styled.input`
-    width: 100%; padding: 0.75rem; color: #000;
+    width: 100%; padding: 0.75rem; color: #4A453E;
     &::file-selector-button {
-        width: 100%; background-color: #0D76B8; color: #fff; font-weight: 500;
-        padding: 1rem 2rem; border: none; border-radius: 1rem; margin-right: 1rem;
+        width: 100%; background-color: #C49A1A; color: #FFF; font-weight: 500;
+        padding: 1rem 2rem; border: none; border-radius: 8px; margin-right: 1rem;
         cursor: pointer; transition: all 0.2s;
     }
-    &::file-selector-button:hover { background-color: #095a8f; }
+    &::file-selector-button:hover { background-color: #1E1B16; }
 `;
 
 const ListDiv = styled.div`
-    display: flex; flex-direction: column; width: 100%; gap: 2rem;
+    display: flex; flex-direction: column; width: 100%; gap: 1rem;
 `;
 
 const Card = styled.div`
-    background-color: #FFF; border: 1px solid #0D76B8; border-radius: 8px;
+    background-color: #FFF; border: 1px solid #E8E2D6; border-radius: 10px;
     padding: 1.5rem; display: flex; gap: 2rem; justify-content: space-between; align-items: center;
+    transition: box-shadow 0.2s ease;
+    &:hover { box-shadow: 0 4px 12px rgba(30, 27, 22, 0.08); }
 `;
 
 const InfoDiv = styled.div`
-    display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;
-    img { width: 100%; max-width: 20rem; height: auto; object-fit: cover; border-radius: 1rem; margin-top: 1rem; }
-    h3 { margin: 0; font-size: 1rem; color: #333; }
-    p { white-space: pre-line; text-align: justify; margin: 0.2rem 0 0; font-size: 0.8rem; color: #333; }
+    display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; flex: 1;
+    img { width: 100%; max-width: 20rem; height: auto; object-fit: cover; border-radius: 10px; margin-top: 1rem; }
+    h3 { margin: 0; font-size: 1rem; color: #1E1B16; }
+    p { white-space: pre-line; text-align: justify; margin: 0.2rem 0 0; font-size: 0.85rem; color: #4A453E; line-height: 1.5; }
 `;
 
-const ActionsDiv = styled.div` display: flex; gap: 1rem; `;
+const DateBadge = styled.span`
+    display: inline-block; font-size: 0.75rem; font-weight: 600;
+    color: #C49A1A; background-color: rgba(196, 154, 26, 0.1);
+    padding: 2px 10px; border-radius: 20px; margin-bottom: 0.5rem;
+`;
+
+const ActionsDiv = styled.div` display: flex; gap: 0.75rem; flex-shrink: 0; `;
 
 const Button = styled.button`
-    padding: 0.7rem 1.5rem; border: none; font-weight: 600;
-    background-color: ${p => p.secondary ? '#6c757d' : p.danger ? '#dc3545' : '#f2b924'};
-    color: ${p => p.secondary || p.danger ? '#FFF' : '#42403dff'};
-    border-radius: 5px; cursor: pointer; transition: all 0.2s;
-    &:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    padding: 0.6rem 1.25rem; border: none; font-weight: 600; font-size: 0.85rem;
+    background-color: ${p => p.secondary ? '#6c757d' : p.danger ? '#E8445A' : '#C49A1A'};
+    color: ${p => p.secondary || p.danger ? '#FFF' : '#FFF'};
+    border-radius: 6px; cursor: pointer; transition: all 0.2s;
+    &:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 `;
 
 export default function Recados() {
@@ -145,7 +156,7 @@ export default function Recados() {
 
             {isProf && (
                 <ManagementDiv>
-                    <h2>Escrever novo recado</h2>
+                    <h2>{isEdit ? 'Editar recado' : 'Escrever novo recado'}</h2>
                     <Form>
                         <Textarea name="texto" placeholder="Texto da Postagem"
                             value={editData.texto}
@@ -159,7 +170,7 @@ export default function Recados() {
                         <Botao text={isEdit ? "Salvar alterações" : "Criar"}
                             onClick={isEdit ? handleSalvarEdicao : handleCriar} />
                         {isEdit && (
-                            <Botao text="Cancelar" bgColor="#DC3545"
+                            <Botao text="Cancelar" bgColor="#6c757d"
                                 onClick={() => { setIsEdit(false); setEditData({ id: null, texto: '', img: '' }); }} />
                         )}
                     </Form>
@@ -176,7 +187,7 @@ export default function Recados() {
                             <InfoDiv>
                                 <div>
                                     <h3>Professor ID: {recado.prof}</h3>
-                                    <p><strong>{formatarData(recado.data)}</strong></p>
+                                    <DateBadge>{formatarData(recado.data)}</DateBadge>
                                     <p>{recado.texto}</p>
                                     {recado.img && <img src={getUploadUrl(recado.img)} alt="Imagem do recado" />}
                                 </div>

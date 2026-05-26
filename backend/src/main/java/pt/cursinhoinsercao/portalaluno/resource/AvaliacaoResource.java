@@ -24,6 +24,15 @@ public class AvaliacaoResource {
     }
 
     @GET
+    @Path("/disciplina/{disciplinaId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    public Response buscarPorDisciplina(@PathParam("disciplinaId") int disciplinaId) {
+        List<Avaliacao> avaliacoes = avaliacaoService.buscarPorDisciplina(disciplinaId);
+        return Response.ok(avaliacoes).build();
+    }
+
+    @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Seguranca

@@ -269,6 +269,11 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
       ]
     },
     {
+      id: 7, title: 'Disciplinas', icon: '📚', submenu: [
+        { title: 'Gerir Disciplinas', to: '/admin/disciplinas' }
+      ]
+    },
+    {
       id: 5, title: 'Relatório de Universidades', icon: '📊', submenu: [
         { title: 'Acessar Relatório', to: '/admin/relatorio-universidades' }
       ]

@@ -42,6 +42,27 @@ public class NotaResource {
         return Response.ok(notas).build();
     }
 
+    @GET
+    @Path("/aluno/{alunoId}/disciplina/{disciplinaId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    public Response buscarPorAlunoEDisciplina(
+            @PathParam("alunoId") int alunoId,
+            @PathParam("disciplinaId") int disciplinaId) {
+        List<Nota> notas = notaService.buscarPorAlunoEDisciplina(alunoId, disciplinaId);
+        return Response.ok(notas).build();
+    }
+
+    @GET
+    @Path("/disciplina/{disciplinaId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    @ProfessorOnly
+    public Response buscarPorDisciplina(@PathParam("disciplinaId") int disciplinaId) {
+        List<Nota> notas = notaService.buscarPorDisciplina(disciplinaId);
+        return Response.ok(notas).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

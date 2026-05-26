@@ -7,13 +7,14 @@ import Botao from '../../components/reused/Botao';
 const Div = styled.div`
     display: flex; flex-direction: column; text-align: left;
     align-content: center; padding: 1rem; height: 100%; gap: 10px;
-    h1 { margin-top: 0; margin-bottom: 1rem; font-size: 1.4rem; color: #0D76B8; }
+    h1 { margin-top: 0; margin-bottom: 1rem; font-size: 1.4rem; color: #1E1B16; }
 `;
 
 const ManagementDiv = styled.section`
     background-color: #FEF8E9; padding: 2rem; border-radius: 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem;
-    h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: #0D76B8; }
+    box-shadow: 0 2px 8px rgba(30, 27, 22, 0.06); margin-bottom: 2rem;
+    border: 1px solid #E8E2D6;
+    h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: #1E1B16; }
 `;
 
 const Form = styled.div`
@@ -22,33 +23,43 @@ const Form = styled.div`
 `;
 
 const Input = styled.input`
-    width: 100%; padding: 0.75rem; border: 2px solid #0D76B8;
-    border-radius: 1rem; color: #000; background-color: #FFF;
+    width: 100%; padding: 0.75rem; border: 1px solid #E8E2D6;
+    border-radius: 8px; color: #4A453E; background-color: #FFF;
+    font-family: inherit; font-size: 0.9rem;
+    &:focus { outline: none; border-color: #C49A1A; box-shadow: 0 0 0 2px rgba(196, 154, 26, 0.15); }
 `;
 
 const ListDiv = styled.div`
-    display: flex; flex-direction: column; width: 100%; gap: 2rem;
+    display: flex; flex-direction: column; width: 100%; gap: 1rem;
 `;
 
 const Card = styled.div`
-    background-color: #FFF; border: 1px solid #0D76B8; border-radius: 8px;
+    background-color: #FFF; border: 1px solid #E8E2D6; border-radius: 10px;
     padding: 1.5rem; display: flex; gap: 2rem; justify-content: space-between; align-items: center;
+    transition: box-shadow 0.2s ease;
+    &:hover { box-shadow: 0 4px 12px rgba(30, 27, 22, 0.08); }
 `;
 
 const InfoDiv = styled.div`
-    display: flex; flex-direction: column; align-items: flex-start; gap: 1rem;
-    h3 { margin: 0; font-size: 1rem; color: #333; }
-    p { margin: 0.2rem 0 0; font-size: 0.8rem; color: #333; word-break: break-all; }
+    display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; flex: 1;
+    h3 { margin: 0; font-size: 1rem; color: #1E1B16; }
+    p { margin: 0; font-size: 0.85rem; color: #4A453E; word-break: break-all; line-height: 1.5; }
 `;
 
-const ActionsDiv = styled.div` display: flex; gap: 1rem; `;
+const DisciplineBadge = styled.span`
+    display: inline-block; font-size: 0.75rem; font-weight: 600;
+    color: #C49A1A; background-color: rgba(196, 154, 26, 0.1);
+    padding: 2px 10px; border-radius: 20px;
+`;
+
+const ActionsDiv = styled.div` display: flex; gap: 0.75rem; flex-shrink: 0; `;
 
 const Button = styled.button`
-    padding: 0.7rem 1.5rem; border: none; font-weight: 600;
-    background-color: ${p => p.secondary ? '#6c757d' : p.danger ? '#dc3545' : '#f2b924'};
-    color: ${p => p.secondary || p.danger ? '#FFF' : '#42403dff'};
-    border-radius: 5px; cursor: pointer; transition: all 0.2s;
-    &:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    padding: 0.6rem 1.25rem; border: none; font-weight: 600; font-size: 0.85rem;
+    background-color: ${p => p.secondary ? '#6c757d' : p.danger ? '#E8445A' : '#C49A1A'};
+    color: ${p => p.secondary || p.danger ? '#FFF' : '#FFF'};
+    border-radius: 6px; cursor: pointer; transition: all 0.2s;
+    &:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 `;
 
 export default function Conteudos() {
@@ -129,7 +140,7 @@ export default function Conteudos() {
                         <Botao text={isEdit ? "Salvar alterações" : "Criar"}
                             onClick={isEdit ? handleSalvarEdicao : handleCriar} />
                         {isEdit && (
-                            <Botao text="Cancelar" bgColor="#DC3545"
+                            <Botao text="Cancelar" bgColor="#6c757d"
                                 onClick={() => { setIsEdit(false); setFormData({ id: null, disciplina: '', link: '' }); }} />
                         )}
                     </Form>
@@ -144,7 +155,7 @@ export default function Conteudos() {
                     ) : conteudos.map(c => (
                         <Card key={c.id}>
                             <InfoDiv>
-                                <h3>Disciplina ID: {c.disciplina || 'Geral'}</h3>
+                                <DisciplineBadge>Disciplina ID: {c.disciplina || 'Geral'}</DisciplineBadge>
                                 <p>{c.link}</p>
                             </InfoDiv>
                             <ActionsDiv>

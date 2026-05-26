@@ -2,6 +2,7 @@ package pt.cursinhoinsercao.portalaluno.resource;
 
 import pt.cursinhoinsercao.portalaluno.dto.SecaoDTO;
 import pt.cursinhoinsercao.portalaluno.entity.Secao;
+import pt.cursinhoinsercao.portalaluno.seguranca.AdminOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.Seguranca;
 import pt.cursinhoinsercao.portalaluno.service.SecaoService;
 
@@ -25,7 +26,8 @@ public class SecaoResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Seguranca // Apenas admins podem aceder
+    @Seguranca
+    @AdminOnly
     public Response criar(SecaoDTO secaoDTO) {
         try {
             Secao novaSecao = new Secao();
@@ -44,7 +46,8 @@ public class SecaoResource {
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Seguranca // Apenas admins podem aceder
+    @Seguranca
+    @AdminOnly
     public Response atualizar(@PathParam("id") int id, SecaoDTO secaoDTO) {
         try {
             Secao secaoParaAtualizar = new Secao();
@@ -61,7 +64,8 @@ public class SecaoResource {
 
     @DELETE
     @Path("/{id}")
-    @Seguranca // Apenas admins podem aceder
+    @Seguranca
+    @AdminOnly
     public Response deletar(@PathParam("id") int id) {
         try {
             secaoService.deletar(id);

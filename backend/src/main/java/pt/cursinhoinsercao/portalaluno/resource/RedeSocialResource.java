@@ -7,6 +7,7 @@ import pt.cursinhoinsercao.portalaluno.dto.SecaoDTO;
 import pt.cursinhoinsercao.portalaluno.entity.Banner;
 import pt.cursinhoinsercao.portalaluno.entity.RedeSocial;
 import pt.cursinhoinsercao.portalaluno.entity.Secao;
+import pt.cursinhoinsercao.portalaluno.seguranca.AdminOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.Seguranca;
 import pt.cursinhoinsercao.portalaluno.service.BannerService;
 import pt.cursinhoinsercao.portalaluno.service.RedeSocialService;
@@ -32,6 +33,7 @@ public class RedeSocialResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Seguranca
+    @AdminOnly
     public Response criar(RedeSocialDTO redeDTO) {
         try {
             RedeSocial novaRede = new RedeSocial();
@@ -51,6 +53,7 @@ public class RedeSocialResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Seguranca
+    @AdminOnly
     public Response atualizar(@PathParam("id") int id, RedeSocialDTO redeDTO) {
         try {
             RedeSocial redeParaAtt = new RedeSocial();
@@ -68,6 +71,7 @@ public class RedeSocialResource {
     @DELETE
     @Path("/{id}")
     @Seguranca
+    @AdminOnly
     public Response deletar(@PathParam("id") int id) {
         try {
             redeService.deletar(id);

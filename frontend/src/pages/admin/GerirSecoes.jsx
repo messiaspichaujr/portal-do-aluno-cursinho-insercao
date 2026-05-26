@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { api } from "../../services/api";
+import { getUploadUrl } from "../../services/uploads";
 import Botao from "../../components/reused/Botao";
 
 // --- Animações ---
@@ -325,7 +326,7 @@ export default function GerirSecoes() {
                         {secoes.map(secao => (
                             <Card key={secao.id}>
                                 <InfoDiv>
-                                    {secao.imagem && <img src={`http://localhost:8080${secao.imagem}`} alt={secao.titulo} />}
+                                    {secao.imagem && <img src={getUploadUrl(secao.imagem)} alt={secao.titulo} />}
                                     <div>
                                         <h3>{secao.titulo}</h3>
                                         <p>ID: {secao.id}</p>
@@ -352,7 +353,7 @@ export default function GerirSecoes() {
                             <Textarea name="texto" value={secaoParaEditar.texto} onChange={handleEditChange} />
                             <label>Imagem Atual:</label>
                             {secaoParaEditar.imagem ? (
-                                <img src={`http://localhost:8080${secaoParaEditar.imagem}`} alt="Imagem atual" style={{ width: '100px', height: 'auto', marginBottom: '1rem' }} />
+                                <img src={`getUploadUrl(secaoParaEditar.imagem)`} alt="Imagem atual" style={{ width: '100px', height: 'auto', marginBottom: '1rem' }} />
                             ) : <p>Nenhuma imagem.</p>}
                             <label htmlFor="edit-secao-upload">Trocar Imagem (Opcional):</label>
                             <Input id="edit-secao-upload" type="file" onChange={handleEditSecaoFileChange} />

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { jwtDecode } from 'jwt-decode';
 import logo from '../../assets/imgs/logo_sem_fundo.png';
 
 const SidebarContainer = styled.aside`
@@ -237,10 +238,20 @@ const DropdownGroup = ({ title, icon, children, isCollapsed }) => {
 export default function PortalSidebar({ isCollapsed, toggleSidebar }) {
   const navigate = useNavigate();
 
+  const token = localStorage.getItem('user_token');
+  let userTipo = 3;
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      userTipo = decoded.tipo;
+    } catch {}
+  }
+  const isProf = userTipo === 2;
+
   const handleLogout = () => {
     if (window.confirm('Tem certeza que deseja sair do sistema?')) {
         localStorage.removeItem('user_token');
-        navigate('/admin');
+        navigate('/home');
     }
   };
 
@@ -249,14 +260,18 @@ export default function PortalSidebar({ isCollapsed, toggleSidebar }) {
         { title: 'Recados', to: '/portal/recados' },
         { title: 'Conteúdos', to: '/portal/conteudos' }
     ]},
-    { id: 2, title: 'Frequência', icon: '📅', submenu: [
+    ...(isProf ? [{ id: 2, title: 'Frequência', icon: '📅', submenu: [
         { title: 'Verificar frequência', to: '/portal/frequencia/ver' },
         { title: 'Lançar frequência', to: '/portal/frequencia' }
-    ]},
-    { id: 3, title: 'Notas', icon: '🎓', submenu: [
+    ]}] : [{ id: 2, title: 'Frequência', icon: '📅', submenu: [
+        { title: 'Verificar frequência', to: '/portal/frequencia/ver' }
+    ]}]),
+    ...(isProf ? [{ id: 3, title: 'Notas', icon: '🎓', submenu: [
         { title: 'Gerir avaliações', to: '/portal/avaliacoes'},
         { title: 'Ver notas', to: '/portal/notas'}
-    ]}
+    ]}] : [{ id: 3, title: 'Notas', icon: '🎓', submenu: [
+        { title: 'Ver notas', to: '/portal/notas'}
+    ]}])
   ];
 
   return (

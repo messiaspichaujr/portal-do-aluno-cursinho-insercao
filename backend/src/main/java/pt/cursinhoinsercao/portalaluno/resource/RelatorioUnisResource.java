@@ -2,7 +2,10 @@ package pt.cursinhoinsercao.portalaluno.resource;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.entity.RelatorioUnis;
+import pt.cursinhoinsercao.portalaluno.seguranca.AdminOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.Seguranca;
 import pt.cursinhoinsercao.portalaluno.service.RelatorioUnisService;
 
@@ -13,8 +16,11 @@ import java.io.InputStream;
 import java.util.List;
 
 @Path("/relatorios")
-@Seguranca // Protege todos os endpoints desta classe por defeito
+@Seguranca
+@AdminOnly
 public class RelatorioUnisResource {
+
+    private static final Logger logger = LoggerFactory.getLogger(RelatorioUnisResource.class);
 
     private RelatorioUnisService relatorioUnisService = new RelatorioUnisService();
 
@@ -35,8 +41,9 @@ public class RelatorioUnisResource {
             RelatorioUnis relatorioCriado = relatorioUnisService.criar(fileInputStream, fileMetaData.getFileName());
             return Response.status(Response.Status.CREATED).entity(relatorioCriado).build();
         } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            logger.error("Erro ao criar relatório", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Erro ao processar o relatório.").build();
         }
     }
 

@@ -18,30 +18,29 @@ public class ServerConfigurator {
 
     public static Server createServer() {
 
-        //Porta
-        Server server = new Server(8080);
+        int port = Integer.parseInt(System.getenv().getOrDefault("SERVER_PORT", "8080"));
+        Server server = new Server(port);
 
         ServletContextHandler apiContext = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         apiContext.setContextPath("/");
 
-        // Configuração robusta do Filtro CORS
+        String allowedOrigins = System.getenv().getOrDefault("CORS_ALLOWED_ORIGINS", "http://localhost:5173");
+
         FilterHolder cors = apiContext.addFilter(CrossOriginFilter.class, "/api/*", EnumSet.of(DispatcherType.REQUEST));
-        cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+        cors.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, allowedOrigins);
         cors.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,POST,PUT,DELETE,HEAD,OPTIONS");
         cors.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "Authorization,X-Requested-With,Content-Type,Accept,Origin");
         cors.setInitParameter(CrossOriginFilter.ALLOW_CREDENTIALS_PARAM, "true");
 
-        // Configuração do Jersey
         ResourceConfig config = new ResourceConfig();
         config.packages("pt.cursinhoinsercao.portalaluno");
         config.register(MultiPartFeature.class);
         ServletHolder servlet = new ServletHolder(new ServletContainer(config));
         apiContext.addServlet(servlet, "/api/*");
 
-        // --- Configuração dos Ficheiros Estáticos (Imagens/Relatórios)
         ResourceHandler staticResourceHandler = new ResourceHandler();
         staticResourceHandler.setResourceBase("./uploads");
-        staticResourceHandler.setDirectoriesListed(false); // Desativar listagem de diretórios por segurança
+        staticResourceHandler.setDirectoriesListed(false);
 
         ServletContextHandler staticContext = new ServletContextHandler();
         staticContext.setContextPath("/uploads");

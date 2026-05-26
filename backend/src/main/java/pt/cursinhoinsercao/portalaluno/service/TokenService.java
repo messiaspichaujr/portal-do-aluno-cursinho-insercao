@@ -7,15 +7,23 @@ import io.jsonwebtoken.security.Keys;
 import pt.cursinhoinsercao.portalaluno.entity.Usuario;
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
 public class TokenService {
 
-    //Esse modelo de Token eu peguei de um canal do youtube ensinando de uma forma boa a utilizar e validar nas funções
+    private static final Key CHAVE_SECRETA;
+    private static final long TEMPO_EXPIRACAO = 3600000;
 
-    private static final Key CHAVE_SECRETA = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
-    private static final long TEMPO_EXPIRACAO = 3600000; // 1 hora
+    static {
+        String envSecret = System.getenv("JWT_SECRET");
+        if (envSecret != null && !envSecret.isEmpty()) {
+            byte[] decodedKey = Base64.getDecoder().decode(envSecret);
+            CHAVE_SECRETA = Keys.hmacShaKeyFor(decodedKey);
+        } else {
+            CHAVE_SECRETA = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+        }
+    }
 
     public String gerarToken(Usuario usuario) {
         Date agora = new Date();
@@ -34,7 +42,7 @@ public class TokenService {
 
     public Claims validarToken(String token) throws Exception {
         return Jwts.parserBuilder()
-                .setSigningKey(CHAVE_SECRETA) // Usa a mesma chave para verificar a assinatura
+                .setSigningKey(CHAVE_SECRETA)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

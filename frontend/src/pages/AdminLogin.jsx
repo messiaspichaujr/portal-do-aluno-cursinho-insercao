@@ -129,18 +129,18 @@ export default function AdminLogin() {
             const currentUrl = window.location.pathname;
 
             // --- Lógica de redirecionamento ---
-            if (userType === 1) { 
-                // Professor/Admin
-                if (currentUrl.includes('/portal')) {
-                    navigate('/portal/avaliacoes');
-                } else {
-                    navigate('/admin/dashboard');
-                }
-            } 
-            else if (userType === 2) { 
-                // Aluno só acessa portal
+            if (userType === 1) {
+                // Admin
+                navigate('/admin/dashboard');
+            }
+            else if (userType === 2) {
+                // Professor
+                navigate('/portal/avaliacoes');
+            }
+            else if (userType === 3) {
+                // Aluno
                 navigate('/portal/notas');
-            } 
+            }
             else {
                 setError('Tipo de usuário desconhecido.');
             }

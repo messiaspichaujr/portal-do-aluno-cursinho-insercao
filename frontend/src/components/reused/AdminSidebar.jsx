@@ -272,6 +272,11 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
       id: 5, title: 'Relatório de Universidades', icon: '📊', submenu: [
         { title: 'Acessar Relatório', to: '/admin/relatorio-universidades' }
       ]
+    },
+    {
+      id: 6, title: 'Criar Conta', icon: '👤', submenu: [
+        { title: 'Novo Usuário', to: '/admin/criar-conta' }
+      ]
     }
   ];
 

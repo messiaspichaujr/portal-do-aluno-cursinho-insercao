@@ -260,7 +260,7 @@ export default function GerirRelatorioUnis() {
                                 </div>
                             </InfoDiv>
                             <ActionsDiv>
-                                <ActionButton href={`http://localhost:8080${relatorio.path}`} target="_blank" download>
+                                <ActionButton href={getUploadUrl(relatorio.path)} target="_blank" download>
                                     Baixar
                                 </ActionButton>
                                 <DeleteButton onClick={() => handleRemover(relatorio.id)} disabled={loading}>

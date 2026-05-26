@@ -1,5 +1,7 @@
 package pt.cursinhoinsercao.portalaluno.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.dao.RelatorioUnisDAO;
 import pt.cursinhoinsercao.portalaluno.entity.RelatorioUnis;
 
@@ -9,6 +11,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class RelatorioUnisService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RelatorioUnisService.class);
 
     private RelatorioUnisDAO relatorioUnisDAO = new RelatorioUnisDAO();
 
@@ -46,8 +50,7 @@ public class RelatorioUnisService {
                 ficheiroParaApagar.delete();
             }
         } catch (Exception e) {
-            System.err.println("Aviso: Falha ao apagar o ficheiro físico: " + relatorio.getPath());
-            e.printStackTrace();
+            logger.warn("Falha ao apagar o ficheiro físico: {}", relatorio.getPath(), e);
         }
     }
 }

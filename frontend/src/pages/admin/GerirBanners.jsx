@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { api } from "../../services/api";
+import { getUploadUrl } from "../../services/uploads";
 
 // --- Animações ---
 const fadeIn = keyframes`from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); }`;
@@ -199,7 +200,7 @@ export default function GerirBanners() {
                     <Grid>
                         {historicoBanners.map(banner => (
                             <Card key={banner.id} ativo={banner.ativo}>
-                                <img src={`http://localhost:8080${banner.imagem}`} alt={`Banner ${banner.id}`} />
+                                <img src={getUploadUrl(banner.imagem)} alt={`Banner ${banner.id}`} />
                                 <div>
                                     <span>{banner.ativo ? 'ATIVO' : 'INATIVO'}</span>
                                     <p>ID: {banner.id}</p>

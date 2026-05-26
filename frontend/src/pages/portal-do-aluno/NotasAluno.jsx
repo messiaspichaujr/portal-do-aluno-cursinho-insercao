@@ -1,186 +1,83 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { useState } from "react";
-import Botao from '../../components/reused/Botao';
+import { useState, useEffect } from "react";
+import { jwtDecode } from 'jwt-decode';
+import { api } from '../../services/api';
 
-// --- Estilização ---
 const Div = styled.div`
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    align-content: center;
-    padding: 1rem;
-    height: 100%;
-    gap: 10px;
-
-    h1 {
-        margin-top: 0;
-        margin-bottom: 1rem;
-        font-size: 1.4rem;
-        color: #0D76B8;
-    }
+    display: flex; flex-direction: column; text-align: left;
+    align-content: center; padding: 1rem; height: 100%; gap: 10px;
+    h1 { margin-top: 0; margin-bottom: 1rem; font-size: 1.4rem; color: #0D76B8; }
 `;
 
 const ManagementDiv = styled.section`
-    background-color: #FEF8E9;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-
-    h2 {
-        margin-top: 0;
-        margin-bottom: 1rem;
-        font-size: 1rem;
-        color: #0D76B8;
-    }
-`;
-
-const Form = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 0;
-    width: 100%;
-    height: 100%;
-    flex-grow: 1;
-    border-radius: 1rem;
-    gap: 1rem;
-    align-items: center;
-`;
-
-const Input = styled.input`
-    font-size: 1rem;
-    width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #0D76B8;
-    border-radius: 1rem;
-    color: #000000;
-    background-color: #FFFFFF;
-
-    &:disabled {
-        font-size: 0.85rem;
-        color: #7e7e7e;
-    }
+    background-color: #FEF8E9; padding: 2rem; border-radius: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 2rem;
+    h2 { margin-top: 0; margin-bottom: 1rem; font-size: 1rem; color: #0D76B8; }
 `;
 
 const ListDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: fit-content;
-    gap: 2rem;
+    display: flex; flex-direction: column; width: 100%; gap: 2rem;
 `;
 
 const Card = styled.div`
-    background-color: #FFFFFF;
-    border: 1px solid #0D76B8;
-    border-radius: 8px;
-    padding: 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: #FFF; border: 1px solid #0D76B8; border-radius: 8px;
+    padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;
 `;
 
 const InfoDiv = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    display: flex; flex-direction: column; gap: 0.25rem;
+    h3 { margin: 0; font-size: 1rem; color: #333; }
+    p { margin: 0; font-size: 0.8rem; color: #888; }
+`;
 
-    img {
-        width: 5rem;
-        height: 5rem;
-        object-fit: cover;
-        border-radius: 1rem;
-    }
-
-    h3 {
-        margin: 0;
-        font-size: 1rem;
-        color: #333;
-    }
-
-    p {
-        margin: 0.2rem 0 0;
-        font-size: 0.8rem;
-        color: #888;
-    }
+const NotaValor = styled.span`
+    font-size: 1.5rem; font-weight: 700; color: #0D76B8;
 `;
 
 export default function NotasAluno() {
-    const navigate = useNavigate();
+    const [notas, setNotas] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const isProf = false;
-    const isEdit = true; // define se está em modo de edição
-
-    // "Mock" de exemplo
-    const [nomeAluno, setNomeAluno] = useState("Fulano da Silva");
-    const [avaliacoes, setAvaliacoes] = useState([
-        { avaliacao: "Redação - 09/10/2025", id: "x", nota: "" },
-        { avaliacao: "Simulado - 09/10/2025", id: "y", nota: "" }
-    ]);
-
-    const handleNotaChange = (index, value) => {
-        const novasAvaliacoes = [...avaliacoes];
-        novasAvaliacoes[index].nota = value;
-        setAvaliacoes(novasAvaliacoes);
-    };
-
-    function handleSave() {
-        if (!nomeAluno.trim() || avaliacoes.some(n => n.nota === "")) {
-            alert("Preencha todos os campos antes de salvar.");
-            return;
-        }
-        navigate("/portal/avaliacoes");
+    const token = localStorage.getItem('user_token');
+    let userId = null;
+    if (token) {
+        try { userId = jwtDecode(token).sub; } catch {}
     }
+
+    useEffect(() => {
+        if (userId) carregarNotas();
+    }, [userId]);
+
+    async function carregarNotas() {
+        try {
+            const res = await api.get(`/api/notas/aluno/${userId}`);
+            setNotas(res.data);
+        } catch (err) {
+            console.error('Erro ao buscar notas:', err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    if (loading) return <Div><p>Carregando...</p></Div>;
 
     return (
         <Div>
-            <h1>Notas</h1>
-
-            <ManagementDiv>
-                <h2>Aluno selecionado</h2>
-                <Form>
-                    <Input 
-                        type="text"
-                        name="nome" 
-                        value={nomeAluno} 
-                        onChange={(e) => setNomeAluno(e.target.value)}
-                        disabled={!isProf} // professor pode mudar, aluno não
-                    />
-                </Form>
-            </ManagementDiv>
-
+            <h1>Minhas Notas</h1>
             <ManagementDiv>
                 <h2>Notas por Avaliação</h2>
                 <ListDiv>
-                    {avaliacoes.map((a, index) => (
-                        <Card key={a.id}>
+                    {notas.length === 0 ? (
+                        <p>Nenhuma nota lançada ainda.</p>
+                    ) : notas.map(n => (
+                        <Card key={n.id}>
                             <InfoDiv>
-                                <div>
-                                    <h3>{a.avaliacao}</h3>
-                                    <p>ID: {a.id}</p>
-                                </div>
+                                <h3>Avaliação ID: {n.avaliacao}</h3>
+                                <p>Registro: {n.id}</p>
                             </InfoDiv>
-                            <div>
-                                <Input 
-                                    type="number" 
-                                    value={a.nota}
-                                    onChange={(e) => handleNotaChange(index, e.target.value)}
-                                    disabled={!isProf} 
-                                />
-                            </div>
+                            <NotaValor>{n.nota}</NotaValor>
                         </Card>
                     ))}
-
-                    {isEdit ? (
-                        <Botao 
-                            text="Salvar" 
-                            onClick={handleSave} 
-                            disabled={!nomeAluno.trim() || avaliacoes.some(n => n.nota === "")}
-                        />
-                    ) : (
-                        <Botao text="Voltar" onClick={() => navigate("/portal/avaliacoes")} />
-                    )}
                 </ListDiv>
             </ManagementDiv>
         </Div>

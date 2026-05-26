@@ -1,5 +1,7 @@
 package pt.cursinhoinsercao.portalaluno.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.dao.BannerDAO;
 import pt.cursinhoinsercao.portalaluno.entity.Banner;
 import pt.cursinhoinsercao.portalaluno.util.JPAUtil;
@@ -8,6 +10,8 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 public class BannerService {
+
+    private static final Logger logger = LoggerFactory.getLogger(BannerService.class);
 
     private BannerDAO bannerDAO = new BannerDAO();
     private static final int MAX_BANNERS_HISTORICO = 5;
@@ -20,20 +24,16 @@ public class BannerService {
         return bannerDAO.listarHistorico();
     }
 
-    //Cria um novo banner, desativa o antigo e gere o histórico.
     public void criarNovoBanner(Banner novoBanner) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
 
-            //Desativa todos os banners existentes
             bannerDAO.desativarTodos(em);
 
-            //Define o novo banner como ativo e salva
             novoBanner.setAtivo(true);
             em.persist(novoBanner);
 
-            //Verifica e remove o banner mais antigo se o limite for excedido
             long total = (Long) em.createQuery("SELECT COUNT(b) FROM Banner b").getSingleResult();
 
             if (total > MAX_BANNERS_HISTORICO) {
@@ -51,7 +51,7 @@ public class BannerService {
                 em.getTransaction().rollback();
             }
 
-            e.printStackTrace();
+            logger.error("Erro ao criar novo banner", e);
 
             throw e;
 
@@ -60,16 +60,13 @@ public class BannerService {
         }
     }
 
-    //Reativa um banner do histórico.
     public void reativarBannerDoHistorico(int id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
 
-            //Desativa todos os banners existentes
             bannerDAO.desativarTodos(em);
 
-            //Busca o banner a ser reativado
             Banner bannerParaReativar = em.find(Banner.class, id);
             if (bannerParaReativar != null) {
 
@@ -88,7 +85,7 @@ public class BannerService {
                 em.getTransaction().rollback();
             }
 
-            e.printStackTrace();
+            logger.error("Erro ao reativar banner", e);
 
             throw e;
 
@@ -97,4 +94,3 @@ public class BannerService {
         }
     }
 }
-

@@ -14,6 +14,14 @@
         <class>pt.cursinhoinsercao.portalaluno.entity.Banner</class>
         <class>pt.cursinhoinsercao.portalaluno.entity.RedeSocial</class>
         <class>pt.cursinhoinsercao.portalaluno.entity.RelatorioUnis</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.Avaliacao</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.Nota</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.Frequencia</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.Recado</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.Conteudo</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.Disciplina</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.DisciplinaProf</class>
+        <class>pt.cursinhoinsercao.portalaluno.entity.TipoFrequencia</class>
 
         <properties>
 
@@ -25,8 +33,8 @@
             <property name="javax.persistence.jdbc.password" value=""/>
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
 
             <property name="hibernate.hbm2ddl.auto" value="update"/>
 
@@ -34,4 +42,3 @@
 
     </persistence-unit>
 </persistence>
-

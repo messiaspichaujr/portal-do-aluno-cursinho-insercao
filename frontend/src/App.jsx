@@ -28,6 +28,7 @@ import PortalLayout from './layouts/PortalLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import VerFrequencia from './pages/portal-do-aluno/VerFrequencia';
 import LancarFrequencia from './pages/portal-do-aluno/LancarFrequencia';
+import NotFound from './pages/NotFound';
 
 export default function App() {
     return (
@@ -36,7 +37,6 @@ export default function App() {
                 {/* ========== ROTAS PÚBLICAS ========== */}
                 <Route path="/" element={<Navigate to="/home" replace/>}/>
                 <Route path="/home" element={<Home/>}/>
-                <Route path="/admin/register" element={<Cadastro/>}/>
                 <Route path="/admin" element={<Navigate to="/admin/login" replace/>}/>
                 <Route path="/admin/login" element={<AdminLogin/>}/>
                 <Route path="/portal/login" element={<AdminLogin/>}/>
@@ -53,11 +53,12 @@ export default function App() {
                         <Route path="/admin/educadores/cadastrados" element={<EducadoresCadastrados/>}/>
                         <Route path="/admin/alunos/matriculados" element={<AlunosMatriculados/>}/>
                         <Route path="/admin/alunos/matriculas" element={<NovasMatriculas/>}/>
+                        <Route path="/admin/criar-conta" element={<Cadastro/>}/>
                     </Route>
                 </Route>
 
-                {/* ========== ROTAS PROTEGIDAS DO PORTAL DO ALUNO/PROFESSOR ========== */}
-                <Route element={<ProtectedRoute allowedRoles={[1, 2]}/>}>
+                {/* ========== ROTAS PROTEGIDAS DO PORTAL (PROFESSOR + ALUNO) ========== */}
+                <Route element={<ProtectedRoute allowedRoles={[2, 3]}/>}>
                     <Route element={<PortalLayout/>}>
                         <Route path="/portal/avaliacoes" element={<GerirAvaliacoes/>}/>
                         <Route path="/portal/avaliacoes/edit" element={<DetalhesAvaliacao/>}/>
@@ -69,6 +70,9 @@ export default function App() {
                         <Route path="/portal/conteudos" element={<Conteudos/>}/>
                     </Route>
                 </Route>
+
+                {/* ========== 404 ========== */}
+                <Route path="*" element={<NotFound/>}/>
             </Routes>
         </BrowserRouter>
     );

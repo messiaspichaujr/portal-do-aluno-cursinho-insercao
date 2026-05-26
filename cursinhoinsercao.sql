@@ -198,8 +198,9 @@ CREATE TABLE `tipo_usuario` (
 --
 
 INSERT INTO `tipo_usuario` (`id`, `tipo`) VALUES
-(1, 'Educador popular'),
-(2, 'Aluno');
+(1, 'Admin'),
+(2, 'Educador popular'),
+(3, 'Aluno');
 
 -- --------------------------------------------------------
 
@@ -408,7 +409,7 @@ ALTER TABLE `usuario`
 -- Restrições para tabelas `conteudo`
 --
 ALTER TABLE `conteudo`
-  ADD CONSTRAINT `conteudo_disciplina` FOREIGN KEY (`disciplina`) REFERENCES `conteudo` (`id`);
+  ADD CONSTRAINT `conteudo_disciplina` FOREIGN KEY (`disciplina`) REFERENCES `disciplina` (`id`);
 
 --
 -- Restrições para tabelas `disciplina_prof`
@@ -421,7 +422,8 @@ ALTER TABLE `disciplina_prof`
 -- Restrições para tabelas `frequencia`
 --
 ALTER TABLE `frequencia`
-  ADD CONSTRAINT `tipo_frequencia` FOREIGN KEY (`frequencia`) REFERENCES `tipo_frequencia` (`id`);
+  ADD CONSTRAINT `tipo_frequencia` FOREIGN KEY (`frequencia`) REFERENCES `tipo_frequencia` (`id`),
+  ADD CONSTRAINT `frequencia_aluno` FOREIGN KEY (`aluno`) REFERENCES `usuario` (`id`);
 
 --
 -- Restrições para tabelas `notas`

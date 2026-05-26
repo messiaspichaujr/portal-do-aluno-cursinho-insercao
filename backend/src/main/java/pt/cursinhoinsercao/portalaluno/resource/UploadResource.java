@@ -2,7 +2,10 @@ package pt.cursinhoinsercao.portalaluno.resource;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.dto.UploadResponse;
+import pt.cursinhoinsercao.portalaluno.seguranca.AdminOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.Seguranca;
 import pt.cursinhoinsercao.portalaluno.service.UploadService;
 
@@ -17,10 +20,13 @@ import java.io.InputStream;
 @Path("/uploads")
 public class UploadResource {
 
+    private static final Logger logger = LoggerFactory.getLogger(UploadResource.class);
+
     private UploadService uploadService = new UploadService();
 
     @POST
     @Seguranca
+    @AdminOnly
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
 
@@ -41,10 +47,9 @@ public class UploadResource {
             return Response.ok(resposta).build();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Erro ao processar upload", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Erro ao processar o upload do ficheiro.").build();
         }
     }
 }
-

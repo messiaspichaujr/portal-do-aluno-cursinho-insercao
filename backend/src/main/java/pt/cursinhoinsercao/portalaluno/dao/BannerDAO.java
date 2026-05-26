@@ -1,5 +1,7 @@
 package pt.cursinhoinsercao.portalaluno.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.entity.Banner;
 import pt.cursinhoinsercao.portalaluno.util.JPAUtil;
 
@@ -11,7 +13,7 @@ import java.util.List;
 
 public class BannerDAO {
 
-    // Busca o banner que está atualmente marcado como ativo
+    private static final Logger logger = LoggerFactory.getLogger(BannerDAO.class);
 
     public Banner buscarAtivo(){
         EntityManager em = JPAUtil.getEntityManager();
@@ -28,8 +30,6 @@ public class BannerDAO {
         }
     }
 
-    // Lista todos os banners para exibir no histórico do admin, do mais novo para o mais antigo
-
     public List<Banner> listarHistorico(){
         EntityManager em = JPAUtil.getEntityManager();
         try{
@@ -40,8 +40,6 @@ public class BannerDAO {
             em.close();
         }
     }
-
-    // Salva um novo Banner na base de dados
 
     public void salvar(Banner banner){
         EntityManager em = JPAUtil.getEntityManager();
@@ -54,13 +52,11 @@ public class BannerDAO {
             if(em.getTransaction().isActive()){
                 em.getTransaction().rollback();
             }
-            e.printStackTrace();
+            logger.error("Erro ao salvar banner", e);
         }finally {
             em.close();
         }
     }
-
-    // Atualiza um Banner existente
 
     public void atualizar (Banner banner){
         EntityManager em = JPAUtil.getEntityManager();
@@ -72,13 +68,11 @@ public class BannerDAO {
             if (em.getTransaction().isActive()){
                 em.getTransaction().rollback();
             }
-            e.printStackTrace();
+            logger.error("Erro ao atualizar banner", e);
         }finally {
             em.close();
         }
     }
-
-    // Remove um banner a base de dados
 
     public void deletar(Banner banner){
         EntityManager em = JPAUtil.getEntityManager();
@@ -92,13 +86,11 @@ public class BannerDAO {
             if (em.getTransaction().isActive()){
                 em.getTransaction().rollback();
             }
-            e.printStackTrace();
+            logger.error("Erro ao deletar banner", e);
         }finally {
             em.close();
         }
     }
-
-    // Conta o número total de banner na base de dados
 
     public long contarBanners(){
         EntityManager em = JPAUtil.getEntityManager();
@@ -109,8 +101,6 @@ public class BannerDAO {
             em.close();
         }
     }
-
-    // Encontra e remove o banner mais antigo da base de dados
 
     public void removerMaisAntigo(){
         EntityManager em = JPAUtil.getEntityManager();
@@ -131,7 +121,7 @@ public class BannerDAO {
             if (em.getTransaction().isActive()){
                 em.getTransaction().rollback();
             }
-            e.printStackTrace();
+            logger.error("Erro ao remover banner mais antigo", e);
         } finally {
             em.close();
         }
@@ -142,6 +132,7 @@ public class BannerDAO {
         Query query = em.createQuery(jpql);
         query.executeUpdate();
     }
+
     public Banner buscarPorId(int id) {
         EntityManager em = JPAUtil.getEntityManager();
         Banner banner = em.find(Banner.class, id);

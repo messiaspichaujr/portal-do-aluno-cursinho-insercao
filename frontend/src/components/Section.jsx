@@ -1,44 +1,110 @@
 import styled from 'styled-components';
+import { getUploadUrl } from '../services/uploads';
 
-const Secao = styled.div`
-        width: 70%;
-        display: flex;
+const SectionWrapper = styled.section`
+    width: 100%;
+    padding: 5rem 0;
+    background-color: ${props => props.$even ? '#FEF8E9' : '#FFFFFF'};
+
+    &:last-of-type {
+        padding-bottom: 4rem;
+    }
+`;
+
+const Content = styled.div`
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+
+    ${props => props.$reverse ? 'flex-direction: row-reverse;' : 'flex-direction: row;'}
+
+    @media (max-width: 768px) {
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin: 2% 15% 2% 15%;
-    `
-const Titulo = styled.h3`
-        font-size: 30px;
+        gap: 2rem;
+    }
+`;
+
+const TextContent = styled.div`
+    flex: 1;
+    min-width: 0;
+
+    @media (max-width: 768px) {
         text-align: center;
-        margin: 0 0 2% 0;
-        color: #333; 
-    `
+    }
+`;
 
-const Texto = styled.p`
-        font-size: 18px;
-        line-height: 1.6;
-        margin: 2% 0 0 0;
-        text-align: center;
-        color: #555;
-    `
+const SectionTitle = styled.h2`
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0D76B8;
+    margin-bottom: 1rem;
+    line-height: 1.3;
 
-const Img = styled.img`
-        width: 60%;
-        max-height: 400px;
-        border-radius: 8px; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-        margin-bottom: 2%; 
-    `
+    @media (max-width: 768px) {
+        font-size: 1.4rem;
+    }
+`;
 
-export default function Section({ titulo, imagem, texto }) {
+const SectionText = styled.p`
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: #555;
+`;
+
+const ImageContent = styled.div`
+    flex: 1;
+    min-width: 0;
+`;
+
+const SectionImage = styled.img`
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.02);
+    }
+`;
+
+const TextOnlyContent = styled.div`
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+`;
+
+export default function Section({ titulo, imagem, texto, index }) {
+    const even = index % 2 === 0;
+    const reverse = index % 2 !== 0;
+
+    if (!imagem) {
+        return (
+            <SectionWrapper $even={even}>
+                <TextOnlyContent>
+                    <SectionTitle>{titulo}</SectionTitle>
+                    <SectionText>{texto}</SectionText>
+                </TextOnlyContent>
+            </SectionWrapper>
+        );
+    }
 
     return (
-        <Secao>
-            <Titulo>{titulo}</Titulo>
-            {imagem && <Img src={`http://localhost:8080${imagem}`} alt={titulo} />}
-            <Texto>{texto}</Texto>
-        </Secao>
+        <SectionWrapper $even={even}>
+            <Content $reverse={reverse}>
+                <TextContent>
+                    <SectionTitle>{titulo}</SectionTitle>
+                    <SectionText>{texto}</SectionText>
+                </TextContent>
+                <ImageContent>
+                    <SectionImage src={getUploadUrl(imagem)} alt={titulo} />
+                </ImageContent>
+            </Content>
+        </SectionWrapper>
     );
 }
-

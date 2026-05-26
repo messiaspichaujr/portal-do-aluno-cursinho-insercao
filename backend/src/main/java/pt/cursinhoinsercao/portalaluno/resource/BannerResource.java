@@ -2,6 +2,7 @@ package pt.cursinhoinsercao.portalaluno.resource;
 
 import pt.cursinhoinsercao.portalaluno.dto.BannerDTO;
 import pt.cursinhoinsercao.portalaluno.entity.Banner;
+import pt.cursinhoinsercao.portalaluno.seguranca.AdminOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.Seguranca;
 import pt.cursinhoinsercao.portalaluno.service.BannerService;
 
@@ -29,7 +30,8 @@ public class BannerResource {
     @GET
     @Path("/historico")
     @Produces(MediaType.APPLICATION_JSON)
-    @Seguranca // Protege esta rota, apenas admins podem ver o histórico
+    @Seguranca
+    @AdminOnly
     public Response listarHistorico() {
         List<Banner> historico = bannerService.listarHistorico();
         return Response.ok(historico).build();
@@ -37,7 +39,8 @@ public class BannerResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Seguranca // Protege esta rota, apenas admins podem criar banners
+    @Seguranca
+    @AdminOnly
     public Response criarNovoBanner(BannerDTO bannerDTO) {
         if (bannerDTO == null || bannerDTO.getImagem() == null || bannerDTO.getImagem().isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity("A URL da imagem é obrigatória.").build();
@@ -51,7 +54,8 @@ public class BannerResource {
 
     @PUT
     @Path("/{id}/reativar")
-    @Seguranca // Protege esta rota, apenas admins podem reativar banners
+    @Seguranca
+    @AdminOnly
     public Response reativarBanner(@PathParam("id") int id) {
         bannerService.reativarBannerDoHistorico(id);
         return Response.ok().build();

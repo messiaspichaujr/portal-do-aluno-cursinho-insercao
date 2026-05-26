@@ -331,7 +331,7 @@ export default function GerirRedes() {
                         {redes.map(rede => (
                             <Card key={rede.id}>
                                 <InfoDiv>
-                                    {rede.imagem && <img src={`http://localhost:8080${rede.imagem}`} alt={rede.texto} />}
+                                    {rede.imagem && <img src={getUploadUrl(rede.imagem)} alt={rede.texto} />}
                                     <div>
                                         <h3 className="redeNome">{rede.texto}</h3>
                                         <p className="redeID">ID: {rede.id}</p>
@@ -358,7 +358,7 @@ export default function GerirRedes() {
                             <Input name="link" value={redeParaEditar.link} onChange={handleEditChange} />
                             <label>Imagem Atual:</label>
                             {redeParaEditar.imagem ? (
-                                <img src={`http://localhost:8080${redeParaEditar.imagem}`} alt="Imagem atual" style={{ width: '100px', height: 'auto', marginBottom: '1rem' }} />
+                                <img src={getUploadUrl(redeParaEditar.imagem)} alt="Imagem atual" style={{ width: '100px', height: 'auto', marginBottom: '1rem' }} />
                             ) : <p>Nenhuma imagem.</p>}
                             <label htmlFor="edit-rede-upload">Trocar Imagem (Opcional):</label>
                             <Input id="edit-rede-upload" type="file" onChange={handleEditRedeImgChange} />

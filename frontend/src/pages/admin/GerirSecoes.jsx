@@ -4,11 +4,9 @@ import { api } from "../../services/api";
 import { getUploadUrl } from "../../services/uploads";
 import Botao from "../../components/reused/Botao";
 
-// --- Animações ---
 const fadeIn = keyframes`from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); }`;
 const fadeOut = keyframes`from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); }`;
 
-// --- Estilização ---
 const Div = styled.div`
     display: flex;
     flex-direction: column;
@@ -22,7 +20,7 @@ const Div = styled.div`
         margin-top: 0;
         margin-bottom: 1rem;
         font-size: 1.4rem;
-        color: #0D76B8;
+        color: #C49A1A;
     }
 `;
 
@@ -37,7 +35,7 @@ const ManagementDiv = styled.section`
         margin-top: 0;
         margin-bottom: 1rem;
         font-size: 1rem;
-        color: #0D76B8;
+        color: #C49A1A;
     }
 `;
 
@@ -56,45 +54,80 @@ const Form = styled.div`
 const Input = styled.input`
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid #0D76B8;
+    border: 2px solid #E8E2D6;
     border-radius: 1rem;
-    color: #000000;
+    color: #1E1B16;
     background-color: #FFFFFF;
+    outline: none;
+
+    &:focus {
+        border-color: #F2B924;
+        box-shadow: 0 0 0 3px rgba(242, 185, 36, 0.15);
+    }
 `;
 
 const InputImg = styled.input`
     width: 100%;
     padding: 0.75rem;
-    color: #000000;
+    color: #1E1B16;
 
     &::file-selector-button {
-    width: 100%;
-    background-color: #0D76B8;
-    color: #fff;
-    font-weight: 500;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 1rem;
-    margin-right: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+        width: 100%;
+        background-color: #F2B924;
+        color: #1E1B16;
+        font-weight: 600;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 1rem;
+        margin-right: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
 
     &::file-selector-button:hover {
-      background-color: #095a8f;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        background-color: #C49A1A;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-  }
 `;
 
 const Textarea = styled.textarea`
     width: 100%;
     padding: 0.8rem;
-    border: 2px solid #0D76B8;
+    border: 2px solid #E8E2D6;
     border-radius: 10px;
     min-height: 120px;
     resize: vertical;
+    outline: none;
+
+    &:focus {
+        border-color: #F2B924;
+        box-shadow: 0 0 0 3px rgba(242, 185, 36, 0.15);
+    }
+`;
+
+const PreviewContainer = styled.div`
+    width: 100%;
+    max-width: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #E8E2D6;
+    background-color: #F5F0E8;
+
+    img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        display: block;
+    }
+`;
+
+const PreviewLabel = styled.p`
+    text-align: center;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    color: #6B6356;
+    margin: 0;
 `;
 
 const ListDiv = styled.div`
@@ -107,7 +140,7 @@ const ListDiv = styled.div`
 
 const Card = styled.div`
     background-color: #FFFFFF;
-    border: 1px solid #0D76B8;
+    border: 1px solid #E8E2D6;
     border-radius: 8px;
     padding: 1.5rem;
     display: flex;
@@ -134,6 +167,13 @@ const InfoDiv = styled.div`
         color: #333;
         word-break: break-all;
     }
+
+    img {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+    }
 `;
 
 const ActionsDiv = styled.div`
@@ -145,8 +185,8 @@ const Button = styled.button`
     padding: 0.7rem 1.5rem;
     border: none;
     font-weight: 600;
-    background-color: ${props => props.secondary ? '#6c757d' : (props.danger ? '#dc3545' : '#f2b924')};
-    color: ${props => (props.danger ? 'white' : '#4a4a4a')};
+    background-color: ${props => props.secondary ? '#6c757d' : (props.danger ? '#dc3545' : '#F2B924')};
+    color: ${props => (props.danger ? 'white' : '#1E1B16')};
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.2s;
@@ -154,11 +194,12 @@ const Button = styled.button`
     &:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        background-color: ${props => props.secondary ? '#5a6268' : (props.danger ? '#c82333' : '#eab308')};
+        background-color: ${props => props.secondary ? '#5a6268' : (props.danger ? '#c82333' : '#C49A1A')};
     }
 
     &:disabled {
         background-color: #ccc;
+        color: #999;
         cursor: not-allowed;
         transform: none;
         box-shadow: none;
@@ -191,22 +232,21 @@ const ToastMessage = styled.div`
 `;
 
 export default function GerirSecoes() {
-    // --- States ---
     const [secoes, setSecoes] = useState([]);
     const [novaSecao, setNovaSecao] = useState({ titulo: '', texto: '' });
     const [secaoFile, setSecaoFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [secaoParaEditar, setSecaoParaEditar] = useState(null);
     const [editSecaoFile, setEditSecaoFile] = useState(null);
+    const [editImagePreview, setEditImagePreview] = useState(null);
 
-    // --- Funções ---
     const showToast = (message, type = 'success') => {
         setToast({ show: true, message, type });
-        setTimeout(() => {
-            setToast({ show: false, message: '', type });
-        }, 3000);
+        setTimeout(() => setToast({ show: false, message: '', type }), 3000);
     };
 
     const fetchSecoes = async () => {
@@ -222,12 +262,13 @@ export default function GerirSecoes() {
         }
     };
 
-    useEffect(() => {
-        fetchSecoes();
-    }, []);
+    useEffect(() => { fetchSecoes(); }, []);
+
+    const canSave = novaSecao.titulo.trim() && novaSecao.texto.trim() && imagePreview;
 
     const handleCriarSecao = async () => {
-        setLoading(true);
+        if (!canSave) return;
+        setSaving(true);
         try {
             let imagemPath = null;
             if (secaoFile) {
@@ -240,17 +281,20 @@ export default function GerirSecoes() {
             showToast("Seção criada com sucesso!");
             setNovaSecao({ titulo: '', texto: '' });
             setSecaoFile(null);
+            setImagePreview(null);
             document.getElementById('secao-upload').value = null;
             fetchSecoes();
-        } catch {
-            showToast("Erro ao criar a seção.", 'error');
+        } catch (err) {
+            const msg = err.response?.data || "Erro ao criar a seção.";
+            console.error("Erro detalhado:", err.response);
+            showToast(msg, 'error');
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
-    
+
     const handleApagarSecao = async (id) => {
-        if (window.confirm("Tem a certeza que quer apagar esta seção?")) {
+        if (window.confirm("Tem certeza que quer apagar esta seção?")) {
             setLoading(true);
             try {
                 await api.delete(`/api/secoes/${id}`);
@@ -263,10 +307,10 @@ export default function GerirSecoes() {
             }
         }
     };
-    
+
     const handleSalvarEdicao = async () => {
         if (!secaoParaEditar) return;
-        setLoading(true);
+        setSaving(true);
         try {
             let imagemPath = secaoParaEditar.imagem;
             if (editSecaoFile) {
@@ -280,24 +324,41 @@ export default function GerirSecoes() {
             showToast("Seção atualizada com sucesso!");
             closeEditModal();
             fetchSecoes();
-        } catch {
-            showToast("Erro ao atualizar a seção.", 'error');
+        } catch (err) {
+            const msg = err.response?.data || "Erro ao atualizar a seção.";
+            showToast(msg, 'error');
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
 
-    // --- Funções do Modal ---
-    const openEditModal = (secao) => { setSecaoParaEditar({ ...secao }); setEditSecaoFile(null); setIsEditModalOpen(true); };
-    const closeEditModal = () => { setIsEditModalOpen(false); setSecaoParaEditar(null); setEditSecaoFile(null); };
+    const openEditModal = (secao) => {
+        setSecaoParaEditar({ ...secao });
+        setEditSecaoFile(null);
+        setEditImagePreview(secao.imagem ? getUploadUrl(secao.imagem) : null);
+        setIsEditModalOpen(true);
+    };
+    const closeEditModal = () => { setIsEditModalOpen(false); setSecaoParaEditar(null); setEditSecaoFile(null); setEditImagePreview(null); };
     const handleEditChange = (e) => { const { name, value } = e.target; setSecaoParaEditar(p => ({ ...p, [name]: value })); };
-    const handleEditSecaoFileChange = (e) => { setEditSecaoFile(e.target.files[0]); };
+    const handleEditSecaoFileChange = (e) => {
+        const file = e.target.files[0];
+        setEditSecaoFile(file);
+        if (file) {
+            setEditImagePreview(URL.createObjectURL(file));
+        }
+    };
     const handleNovaSecaoChange = (e) => {
         const { name, value } = e.target;
-        setNovaSecao(prevState => ({ ...prevState, [name]: value }));
+        setNovaSecao(prev => ({ ...prev, [name]: value }));
     };
     const handleSecaoFileChange = (e) => {
-        setSecaoFile(e.target.files[0]);
+        const file = e.target.files[0];
+        setSecaoFile(file);
+        if (file) {
+            setImagePreview(URL.createObjectURL(file));
+        } else {
+            setImagePreview(null);
+        }
     };
 
     return (
@@ -311,11 +372,22 @@ export default function GerirSecoes() {
                     <Input type="text" name="titulo" placeholder="Título da Seção" value={novaSecao.titulo} onChange={handleNovaSecaoChange} />
                     <Textarea name="texto" placeholder="Texto da Seção" value={novaSecao.texto} onChange={handleNovaSecaoChange} />
                     <InputImg
-                        id="secao-upload" 
+                        id="secao-upload"
                         type="file"
+                        accept="image/*"
                         onChange={handleSecaoFileChange}
                     />
-                    <Botao onClick={handleCriarSecao} disabled={loading} text={loading ? 'A Guardar...' : 'Guardar Nova Seção'}/>
+                    {imagePreview && (
+                        <PreviewContainer>
+                            <img src={imagePreview} alt="Pré-visualização" />
+                            <PreviewLabel>Pré-visualização da imagem</PreviewLabel>
+                        </PreviewContainer>
+                    )}
+                    <Botao
+                        onClick={handleCriarSecao}
+                        disabled={!canSave || saving}
+                        text={saving ? 'A Guardar...' : 'Guardar Nova Seção'}
+                    />
                 </Form>
             </ManagementDiv>
 
@@ -351,17 +423,19 @@ export default function GerirSecoes() {
                             <Input type="text" name="titulo" value={secaoParaEditar.titulo} onChange={handleEditChange} />
                             <label>Texto:</label>
                             <Textarea name="texto" value={secaoParaEditar.texto} onChange={handleEditChange} />
-                            <label>Imagem Atual:</label>
-                            {secaoParaEditar.imagem ? (
-                                <img src={`getUploadUrl(secaoParaEditar.imagem)`} alt="Imagem atual" style={{ width: '100px', height: 'auto', marginBottom: '1rem' }} />
-                            ) : <p>Nenhuma imagem.</p>}
+                            {editImagePreview && (
+                                <PreviewContainer>
+                                    <img src={editImagePreview} alt="Imagem atual" />
+                                    <PreviewLabel>Imagem atual</PreviewLabel>
+                                </PreviewContainer>
+                            )}
                             <label htmlFor="edit-secao-upload">Trocar Imagem (Opcional):</label>
-                            <Input id="edit-secao-upload" type="file" onChange={handleEditSecaoFileChange} />
+                            <InputImg id="edit-secao-upload" type="file" accept="image/*" onChange={handleEditSecaoFileChange} />
                         </Form>
                         <ActionsDiv style={{ marginTop: '1.5rem', justifyContent: 'flex-end' }}>
-                            <Button secondary onClick={closeEditModal} disabled={loading}>Cancelar</Button>
-                            <Button onClick={handleSalvarEdicao} disabled={loading}>
-                                {loading ? 'A Salvar...' : 'Salvar Alterações'}
+                            <Button secondary onClick={closeEditModal} disabled={saving}>Cancelar</Button>
+                            <Button onClick={handleSalvarEdicao} disabled={saving}>
+                                {saving ? 'A Salvar...' : 'Salvar Alterações'}
                             </Button>
                         </ActionsDiv>
                     </ModalContent>
@@ -370,4 +444,3 @@ export default function GerirSecoes() {
         </Div>
     );
 }
-

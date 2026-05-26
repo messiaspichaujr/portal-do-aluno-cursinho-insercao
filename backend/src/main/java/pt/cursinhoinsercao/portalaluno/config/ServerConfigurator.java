@@ -1,6 +1,7 @@
 package pt.cursinhoinsercao.portalaluno.config;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -54,13 +55,13 @@ public class ServerConfigurator {
         ResourceHandler staticResourceHandler = new ResourceHandler();
         staticResourceHandler.setResourceBase("./uploads");
         staticResourceHandler.setDirectoriesListed(false);
+        staticResourceHandler.setWelcomeFiles(new String[]{});
 
-        ServletContextHandler staticContext = new ServletContextHandler();
-        staticContext.setContextPath("/uploads");
-        staticContext.setHandler(staticResourceHandler);
+        ContextHandler uploadContext = new ContextHandler("/uploads");
+        uploadContext.setHandler(staticResourceHandler);
 
         HandlerList handlers = new HandlerList();
-        handlers.addHandler(staticContext);
+        handlers.addHandler(uploadContext);
         handlers.addHandler(apiContext);
 
         server.setHandler(handlers);

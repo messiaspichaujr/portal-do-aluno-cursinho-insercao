@@ -1,4 +1,5 @@
 import { api } from "../../services/api";
+import { getUploadUrl } from "../../services/uploads";
 import Botao from '../../components/reused/Botao';
 import styled, { keyframes } from "styled-components";
 import { useEffect, useState } from "react";
@@ -21,7 +22,7 @@ const Div = styled.div`
         margin-top: 0;
         margin-bottom: 1rem;
         font-size: 1.4rem;
-        color: #0D76B8;
+        color: #C49A1A;
     }
 `
 
@@ -36,7 +37,7 @@ const ManagementDiv = styled.section`
         margin-top: 0;
         margin-bottom: 1rem;
         font-size: 1rem;
-        color: #0D76B8;
+        color: #C49A1A;
     }
 `;
 
@@ -55,14 +56,14 @@ const Form = styled.div`
 const Label = styled.p`
     font-size: 0.95rem;
     font-weight: 600;
-    color: #E23467;
+    color: #4A453E;
     align-self: flex-start;
 `
 
 const Input = styled.input`
     width: 100%;
     padding: 0.75rem;
-    border: 2px solid #0D76B8;
+    border: 2px solid #E8E2D6;
     border-radius: 1rem;
     color: #000000;
     background-color: #FFFFFF;
@@ -75,8 +76,8 @@ const InputImg = styled.input`
 
     &::file-selector-button {
     width: 100%;
-    background-color: #0D76B8;
-    color: #fff;
+    background-color: #F2B924;
+    color: #1E1B16;
     font-weight: 500;
     padding: 1rem 2rem;
     border: none;
@@ -87,7 +88,7 @@ const InputImg = styled.input`
   }
 
     &::file-selector-button:hover {
-      background-color: #095a8f;
+      background-color: #C49A1A;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
@@ -104,7 +105,7 @@ const ListDiv = styled.div`
 
 const Card = styled.div`
     background-color: #FFFFFF;
-    border: 1px solid #0D76B8;
+    border: 1px solid #E8E2D6;
     border-radius: 8px;
     padding: 1.5rem;
     display: flex;

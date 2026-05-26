@@ -11,13 +11,13 @@ public class Secao {
     private int id;
 
     // Adiciona o campo 'titulo' para corresponder à base de dados
-    @Column(name = "titulo")
+    @Column(name = "titulo", columnDefinition = "TEXT")
     private String titulo;
 
-    @Column(name = "texto")
+    @Column(name = "texto", columnDefinition = "TEXT")
     private String texto;
 
-    @Column(name = "imagem")
+    @Column(name = "imagem", columnDefinition = "TEXT")
     private String imagem;
 
     // --- Getters e Setters ---

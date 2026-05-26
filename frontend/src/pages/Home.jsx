@@ -80,18 +80,20 @@ export default function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [resSecoes, resBanner] = await Promise.all([
-                    api.get('/api/secoes'),
-                    api.get('/api/banners/ativo')
-                ]);
+                const resSecoes = await api.get('/api/secoes');
                 setSecoes(resSecoes.data);
+            } catch (err) {
+                console.error("Erro ao buscar seções:", err);
+            }
+
+            try {
+                const resBanner = await api.get('/api/banners/ativo');
                 setBannerUrl(getUploadUrl(resBanner.data.imagem));
             } catch (err) {
-                console.error("Erro ao buscar dados da home:", err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
+                console.log("Nenhum banner ativo, usando imagem padrão.");
             }
+
+            setLoading(false);
         };
         fetchData();
     }, []);

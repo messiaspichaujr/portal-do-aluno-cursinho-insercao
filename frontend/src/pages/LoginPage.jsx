@@ -116,7 +116,7 @@ const ErrorMessage = styled.p`
 
 const BackLink = styled(Link)`
     display: inline-block;
-    margin-top: 1.5rem;
+    margin-top: 0.5rem;
     font-size: 0.85rem;
     color: #6B6356;
     text-decoration: none;
@@ -124,6 +124,21 @@ const BackLink = styled(Link)`
 
     &:hover {
         color: #C49A1A;
+    }
+`;
+
+const RegisterLink = styled(Link)`
+    display: inline-block;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #C49A1A;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+
+    &:hover {
+        color: #1E1B16;
+        text-decoration: underline;
     }
 `;
 
@@ -199,6 +214,7 @@ export default function LoginPage() {
                     </SubmitButton>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
                 </Form>
+                <RegisterLink to="/cadastro">Ainda não tem conta? Cadastre-se</RegisterLink>
                 <BackLink to="/home">Voltar ao site</BackLink>
             </LoginCard>
         </PageWrapper>

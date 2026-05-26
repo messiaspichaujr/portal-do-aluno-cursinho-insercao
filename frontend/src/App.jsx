@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 // --- Páginas ---
 import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
+import CadastroPublico from './pages/CadastroPublico';
 import LoginPage from './pages/LoginPage';
 
 // --- Páginas de Administração ---
@@ -40,6 +41,7 @@ export default function App() {
                 <Route path="/admin" element={<Navigate to="/admin/login" replace/>}/>
                 <Route path="/admin/login" element={<LoginPage/>}/>
                 <Route path="/portal/login" element={<LoginPage/>}/>
+                <Route path="/cadastro" element={<CadastroPublico/>}/>
 
                 {/* ========== ROTAS PROTEGIDAS DO PAINEL DE ADMINISTRAÇÃO ========== */}
                 <Route element={<ProtectedRoute allowedRoles={[1]}/>}>

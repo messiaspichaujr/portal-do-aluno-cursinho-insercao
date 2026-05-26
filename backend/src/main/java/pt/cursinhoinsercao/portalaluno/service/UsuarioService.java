@@ -40,10 +40,8 @@ public class UsuarioService {
 
         if (tipo == 1) {
             novoUsuario.setAtivo(true);
-        } else if (tipo == 2) {
-            novoUsuario.setAtivo(false);
         } else {
-            novoUsuario.setAtivo(true);
+            novoUsuario.setAtivo(false);
         }
 
         novoUsuario.setSenha(PasswordUtil.hash(novoUsuario.getSenha()));

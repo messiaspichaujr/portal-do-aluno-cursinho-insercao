@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { api } from '../../services/api';
+import Loading from '../../components/reused/Loading';
 
 /* ─── Color tokens ─── */
 const C = {
@@ -208,7 +209,7 @@ export default function NotasAluno() {
     }
 
     /* ─── Loading ─── */
-    if (loading) return <Container><Spinner>Carregando...</Spinner></Container>;
+    if (loading) return <Container><Loading /></Container>;
 
     /* ─── Render ─── */
     return (

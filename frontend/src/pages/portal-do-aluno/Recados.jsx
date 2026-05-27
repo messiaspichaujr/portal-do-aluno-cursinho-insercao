@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from 'jwt-decode';
 import { api } from '../../services/api';
 import Botao from '../../components/reused/Botao';
+import Loading from '../../components/reused/Loading';
 
 const Div = styled.div`
     display: flex; flex-direction: column; text-align: left;
@@ -162,7 +163,7 @@ export default function Recados() {
         });
     }
 
-    if (loading) return <Div><p>Carregando...</p></Div>;
+    if (loading) return <Div><Loading /></Div>;
 
     return (
         <Div>

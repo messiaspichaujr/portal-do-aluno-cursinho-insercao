@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { api } from '../../services/api';
 import Botao from '../../components/reused/Botao';
+import Loading from '../../components/reused/Loading';
 
 const colors = {
     dark: '#1E1B16',
@@ -361,7 +362,7 @@ export default function LancarFrequencia() {
     if (loading) {
         return (
             <Page>
-                <LoadingOverlay>Carregando...</LoadingOverlay>
+                <LoadingOverlay><Loading /></LoadingOverlay>
             </Page>
         );
     }

@@ -3,6 +3,7 @@ import { getUploadUrl } from "../../services/uploads";
 import styled from 'styled-components';
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
+import Loading from './Loading';
 
 const FooterWrapper = styled.footer`
     background-color: #1E1B16;
@@ -159,7 +160,7 @@ export default function Footer() {
                 <FooterCol>
                     <FooterTitle>Redes Sociais</FooterTitle>
                     {loading ? (
-                        <FooterText>Carregando...</FooterText>
+                        <FooterText><Loading /></FooterText>
                     ) : redes.length === 0 ? (
                         <FooterText>Nenhuma rede social cadastrada.</FooterText>
                     ) : redes.map(rede => (

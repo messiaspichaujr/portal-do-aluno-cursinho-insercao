@@ -6,6 +6,7 @@ import Navbar from "../components/reused/Navbar";
 import Banner from "../components/Banner";
 import Section from "../components/Section";
 import Footer from "../components/reused/Footer";
+import Loading from '../components/reused/Loading';
 import styled from 'styled-components';
 
 import '../global.css';
@@ -104,7 +105,7 @@ export default function Home() {
     }, []);
 
     if (loading) {
-        return <LoadingContainer>Carregando...</LoadingContainer>;
+        return <LoadingContainer><Loading /></LoadingContainer>;
     }
 
     if (error) {

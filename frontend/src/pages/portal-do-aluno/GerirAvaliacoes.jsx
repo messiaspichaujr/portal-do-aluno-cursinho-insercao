@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState, useEffect, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { api } from '../../services/api';
+import Loading from '../../components/reused/Loading';
 
 const C = {
     dark:    '#1E1B16',
@@ -267,7 +268,7 @@ export default function GerirAvaliacoes() {
     const safePage = Math.min(page, totalPages);
     const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-    if (loading) return <Container><Spinner>Carregando...</Spinner></Container>;
+    if (loading) return <Container><Loading /></Container>;
 
     // Student view
     if (!isProf && user?.tipo === 3) {

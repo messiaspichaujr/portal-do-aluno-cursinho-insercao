@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useState, useEffect, useMemo } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import { api } from '../../services/api';
+import Loading from '../../components/reused/Loading';
 
 const colors = {
     dark: '#1E1B16',
@@ -429,7 +430,7 @@ export default function VerFrequencia() {
     if (loading) {
         return (
             <Page>
-                <LoadingOverlay>Carregando...</LoadingOverlay>
+                <LoadingOverlay><Loading /></LoadingOverlay>
             </Page>
         );
     }

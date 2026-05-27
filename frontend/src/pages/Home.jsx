@@ -7,7 +7,7 @@ import Banner from "../components/Banner";
 import Section from "../components/Section";
 import Footer from "../components/reused/Footer";
 import Loading from '../components/reused/Loading';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import '../global.css';
 
@@ -29,6 +29,15 @@ const ErrorContainer = styled.div`
     color: #E8445A;
     padding: 2rem;
     text-align: center;
+`;
+
+const fadeIn = keyframes`
+    from { opacity: 0; }
+    to { opacity: 1; }
+`;
+
+const PageContent = styled.div`
+    animation: ${fadeIn} 0.6s ease-out;
 `;
 
 const CTASection = styled.section`
@@ -113,7 +122,7 @@ export default function Home() {
     }
 
     return (
-        <>
+        <PageContent>
             <Navbar />
             <Banner imagemUrl={bannerUrl} />
 
@@ -137,6 +146,6 @@ export default function Home() {
             </CTASection>
 
             <Footer />
-        </>
+        </PageContent>
     );
 }

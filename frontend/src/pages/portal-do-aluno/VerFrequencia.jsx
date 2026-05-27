@@ -208,7 +208,7 @@ export default function VerFrequencia() {
     // Professor state
     const [disciplinas, setDisciplinas] = useState([]);
     const [disciplinaId, setDisciplinaId] = useState('');
-    const [todosAlunos, setTodosAlunos] = useState([]);
+    const [alunoNomes, setAlunoNomes] = useState({});
 
     // Student state
     const [studentDisciplinas, setStudentDisciplinas] = useState([]);
@@ -233,14 +233,8 @@ export default function VerFrequencia() {
 
         if (isProf) {
             setLoading(true);
-            Promise.all([
-                api.get('/api/disciplinas'),
-                api.get('/api/usuarios/alunos/matriculados'),
-            ])
-                .then(([resDisc, resAlunos]) => {
-                    setDisciplinas(resDisc.data);
-                    setTodosAlunos(resAlunos.data);
-                })
+            api.get('/api/disciplinas')
+                .then((res) => setDisciplinas(res.data))
                 .catch((err) => console.error('Erro ao carregar dados:', err))
                 .finally(() => setLoading(false));
         } else if (userId) {
@@ -258,10 +252,25 @@ export default function VerFrequencia() {
             return;
         }
         setLoading(true);
-        api.get(`/api/frequencias/disciplina/${disciplinaId}`)
-            .then((res) => setFrequencias(res.data))
-            .catch((err) => console.error('Erro ao buscar frequencias:', err))
-            .finally(() => setLoading(false));
+        (async () => {
+            try {
+                const res = await api.get(`/api/frequencias/disciplina/${disciplinaId}`);
+                setFrequencias(res.data);
+                const alunoIds = [...new Set(res.data.map(f => f.aluno))];
+                if (alunoIds.length > 0) {
+                    try {
+                        const nomesRes = await api.get(`/api/usuarios/nomes?ids=${alunoIds.join(',')}`);
+                        const names = {};
+                        nomesRes.data.forEach(p => { names[p.id] = p.nome; });
+                        setAlunoNomes(names);
+                    } catch {}
+                }
+            } catch (err) {
+                console.error('Erro ao buscar frequencias:', err);
+            } finally {
+                setLoading(false);
+            }
+        })();
     }, [disciplinaId, isProf]);
 
     async function loadStudentData() {
@@ -295,12 +304,15 @@ export default function VerFrequencia() {
 
     function getTipoLabel(tipoId) {
         const t = tiposFrequencia.find((tf) => tf.id === tipoId);
-        return t ? t.tipo : String(tipoId);
+        if (!t) return String(tipoId);
+        const map = { 'P': 'Presente', 'F': 'Falta', 'FJ': 'Falta Justificada' };
+        return map[t.tipo] || t.tipo;
     }
 
     function isPresente(tipoId) {
-        const label = getTipoLabel(tipoId);
-        return label.toLowerCase().includes('presente');
+        const t = tiposFrequencia.find((tf) => tf.id === tipoId);
+        if (!t) return false;
+        return t.tipo === 'P' || t.tipo.toLowerCase() === 'presente';
     }
 
     function formatarData(dataStr) {
@@ -308,8 +320,7 @@ export default function VerFrequencia() {
     }
 
     function getAlunoNome(alunoId) {
-        const a = todosAlunos.find((al) => al.id === alunoId);
-        return a ? a.nome : `Aluno #${alunoId}`;
+        return alunoNomes[alunoId] || `Aluno #${alunoId}`;
     }
 
     // Group records by period (week or month)

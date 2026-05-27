@@ -158,23 +158,22 @@ export default function GerirAvaliacoes() {
         })();
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const res = await api.get('/api/usuarios/alunos/matriculados');
-                const map = {};
-                res.data.forEach(s => { map[s.id] = s.nome; });
-                setStudentMap(map);
-            } catch {}
-        })();
-    }, []);
-
     const loadDisciplineData = useCallback(async (discId) => {
         if (!discId) { setMatriculas([]); setAvaliacaoMap({}); setGrades({}); return; }
         setError('');
         try {
             const matRes = await api.get(`/api/matriculas-disciplina/disciplina/${discId}`);
             setMatriculas(matRes.data);
+
+            const alunoIds = matRes.data.map(m => m.aluno);
+            if (alunoIds.length > 0) {
+                try {
+                    const nomesRes = await api.get(`/api/usuarios/nomes?ids=${alunoIds.join(',')}`);
+                    const map = {};
+                    nomesRes.data.forEach(p => { map[p.id] = p.nome; });
+                    setStudentMap(map);
+                } catch {}
+            }
 
             const avaRes = await api.get(`/api/avaliacoes/disciplina/${discId}`);
             let avas = avaRes.data;

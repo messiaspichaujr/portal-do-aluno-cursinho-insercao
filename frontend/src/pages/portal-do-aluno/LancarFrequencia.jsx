@@ -229,11 +229,20 @@ const SuccessBanner = styled.div`
     font-size: 0.9rem;
 `;
 
+async function loadNomes(alunoIds) {
+    if (alunoIds.length === 0) return {};
+    try {
+        const res = await api.get(`/api/usuarios/nomes?ids=${alunoIds.join(',')}`);
+        const names = {};
+        res.data.forEach(p => { names[p.id] = p.nome; });
+        return names;
+    } catch { return {}; }
+}
+
 export default function LancarFrequencia() {
     const [disciplinas, setDisciplinas] = useState([]);
     const [disciplinaId, setDisciplinaId] = useState('');
     const [alunosMatriculados, setAlunosMatriculados] = useState([]);
-    const [todosAlunos, setTodosAlunos] = useState([]);
     const [tiposFrequencia, setTiposFrequencia] = useState([]);
     const [data, setData] = useState(new Date().toISOString().split('T')[0]);
     const [presencas, setPresencas] = useState([]);
@@ -245,12 +254,10 @@ export default function LancarFrequencia() {
         setLoading(true);
         Promise.all([
             api.get('/api/disciplinas'),
-            api.get('/api/usuarios/alunos/matriculados'),
             api.get('/api/frequencias/tipos'),
         ])
-            .then(([resDisc, resAlunos, resTipos]) => {
+            .then(([resDisc, resTipos]) => {
                 setDisciplinas(resDisc.data);
-                setTodosAlunos(resAlunos.data);
                 setTiposFrequencia(resTipos.data);
             })
             .catch((err) => console.error('Erro ao carregar dados:', err))
@@ -263,17 +270,17 @@ export default function LancarFrequencia() {
             setPresencas([]);
             return;
         }
-        api.get(`/api/matriculas-disciplina/disciplina/${disciplinaId}`)
-            .then((res) => {
+        (async () => {
+            try {
+                const res = await api.get(`/api/matriculas-disciplina/disciplina/${disciplinaId}`);
                 const matriculas = res.data;
-                const enriched = matriculas.map((m) => {
-                    const alunoInfo = todosAlunos.find((a) => a.id === m.aluno);
-                    return {
-                        alunoId: m.aluno,
-                        nome: alunoInfo ? alunoInfo.nome : `Aluno #${m.aluno}`,
-                        matriculaId: m.id,
-                    };
-                });
+                const alunoIds = matriculas.map(m => m.aluno);
+                const names = await loadNomes(alunoIds);
+                const enriched = matriculas.map((m) => ({
+                    alunoId: m.aluno,
+                    nome: names[m.aluno] || `Aluno #${m.aluno}`,
+                    matriculaId: m.id,
+                }));
                 enriched.sort((a, b) => a.nome.localeCompare(b.nome));
                 setAlunosMatriculados(enriched);
                 setPresencas(
@@ -284,9 +291,11 @@ export default function LancarFrequencia() {
                         justificativa: '',
                     }))
                 );
-            })
-            .catch((err) => console.error('Erro ao buscar matriculas:', err));
-    }, [disciplinaId, todosAlunos]);
+            } catch (err) {
+                console.error('Erro ao buscar matriculas:', err);
+            }
+        })();
+    }, [disciplinaId]);
 
     const handleToggle = (index) => {
         const novas = [...presencas];

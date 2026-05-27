@@ -92,6 +92,30 @@ public class UsuarioResource {
     }
 
     @GET
+    @Path("/nomes")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    public Response listarNomes(@QueryParam("ids") String ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Response.ok(java.util.Collections.emptyList()).build();
+        }
+        java.util.List<java.util.Map<String, Object>> result = new java.util.ArrayList<>();
+        for (String s : ids.split(",")) {
+            try {
+                int id = Integer.parseInt(s.trim());
+                Usuario u = usuarioService.buscarPorId(id);
+                if (u != null) {
+                    java.util.Map<String, Object> map = new java.util.LinkedHashMap<>();
+                    map.put("id", u.getId());
+                    map.put("nome", u.getNome());
+                    result.add(map);
+                }
+            } catch (NumberFormatException ignored) {}
+        }
+        return Response.ok(result).build();
+    }
+
+    @GET
     @Path("/alunos/matriculados")
     @Produces(MediaType.APPLICATION_JSON)
     @Seguranca

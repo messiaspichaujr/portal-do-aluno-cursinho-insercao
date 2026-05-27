@@ -269,8 +269,7 @@ export default function PortalSidebar({ isCollapsed, toggleSidebar }) {
         { title: 'Ver Frequencia', to: '/portal/frequencia/ver' }
     ]}]),
     ...(isProf ? [{ id: 3, title: 'Notas', icon: '🎓', submenu: [
-        { title: 'Gerir Avaliacoes', to: '/portal/avaliacoes'},
-        { title: 'Minhas Notas', to: '/portal/notas'}
+        { title: 'Gerir Avaliacoes', to: '/portal/avaliacoes'}
     ]}] : [{ id: 3, title: 'Notas', icon: '🎓', submenu: [
         { title: 'Minhas Notas', to: '/portal/notas'}
     ]}])

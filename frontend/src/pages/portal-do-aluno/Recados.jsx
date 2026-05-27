@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { useState, useEffect } from "react";
 import { jwtDecode } from 'jwt-decode';
 import { api } from '../../services/api';
-import { getUploadUrl } from '../../services/uploads';
 import Botao from '../../components/reused/Botao';
 
 const Div = styled.div`
@@ -30,55 +29,58 @@ const Textarea = styled.textarea`
     &:focus { outline: none; border-color: #C49A1A; box-shadow: 0 0 0 2px rgba(196, 154, 26, 0.15); }
 `;
 
-const InputImg = styled.input`
-    width: 100%; padding: 0.75rem; color: #4A453E;
-    &::file-selector-button {
-        width: 100%; background-color: #C49A1A; color: #FFF; font-weight: 500;
-        padding: 1rem 2rem; border: none; border-radius: 8px; margin-right: 1rem;
-        cursor: pointer; transition: all 0.2s;
-    }
-    &::file-selector-button:hover { background-color: #1E1B16; }
-`;
-
 const ListDiv = styled.div`
     display: flex; flex-direction: column; width: 100%; gap: 1rem;
 `;
 
-const Card = styled.div`
-    background-color: #FFF; border: 1px solid #E8E2D6; border-radius: 10px;
-    padding: 1.5rem; display: flex; gap: 2rem; justify-content: space-between; align-items: center;
-    transition: box-shadow 0.2s ease;
+const RecadoCard = styled.div`
+    background-color: #FFF; border: 1px solid #E8E2D6; border-radius: 12px;
+    padding: 1.5rem; transition: box-shadow 0.2s ease;
     &:hover { box-shadow: 0 4px 12px rgba(30, 27, 22, 0.08); }
 `;
 
-const InfoDiv = styled.div`
-    display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; flex: 1;
-    img { width: 100%; max-width: 20rem; height: auto; object-fit: cover; border-radius: 10px; margin-top: 1rem; }
-    h3 { margin: 0; font-size: 1rem; color: #1E1B16; }
-    p { white-space: pre-line; text-align: justify; margin: 0.2rem 0 0; font-size: 0.85rem; color: #4A453E; line-height: 1.5; }
+const RecadoHeader = styled.div`
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.75rem; padding-bottom: 0.75rem;
+    border-bottom: 1px solid #E8E2D6;
 `;
 
-const DateBadge = styled.span`
-    display: inline-block; font-size: 0.75rem; font-weight: 600;
-    color: #C49A1A; background-color: rgba(196, 154, 26, 0.1);
-    padding: 2px 10px; border-radius: 20px; margin-bottom: 0.5rem;
+const AuthorInfo = styled.div`
+    display: flex; align-items: center; gap: 0.5rem;
 `;
 
-const ActionsDiv = styled.div` display: flex; gap: 0.75rem; flex-shrink: 0; `;
+const AuthorName = styled.span`
+    font-size: 0.9rem; font-weight: 600; color: #1E1B16;
+`;
 
-const Button = styled.button`
-    padding: 0.6rem 1.25rem; border: none; font-weight: 600; font-size: 0.85rem;
-    background-color: ${p => p.secondary ? '#6c757d' : p.danger ? '#E8445A' : '#C49A1A'};
-    color: ${p => p.secondary || p.danger ? '#FFF' : '#FFF'};
-    border-radius: 6px; cursor: pointer; transition: all 0.2s;
-    &:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+const Separator = styled.span`
+    color: #C49A1A; font-size: 0.85rem;
+`;
+
+const DateText = styled.span`
+    font-size: 0.8rem; color: #4A453E;
+`;
+
+const RecadoBody = styled.p`
+    white-space: pre-line; text-align: justify; margin: 0;
+    font-size: 0.9rem; color: #4A453E; line-height: 1.6;
+`;
+
+const ActionsDiv = styled.div` display: flex; gap: 0.5rem; `;
+
+const ActionBtn = styled.button`
+    padding: 0.35rem 0.7rem; border: none; font-weight: 600; font-size: 0.75rem;
+    background-color: ${p => p.danger ? '#E8445A' : '#C49A1A'};
+    color: #FFF; border-radius: 6px; cursor: pointer; transition: opacity 0.2s;
+    &:hover { opacity: 0.85; }
 `;
 
 export default function Recados() {
     const [recados, setRecados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
-    const [editData, setEditData] = useState({ id: null, texto: '', img: '' });
+    const [editData, setEditData] = useState({ id: null, texto: '' });
+    const [profNames, setProfNames] = useState({});
 
     const token = localStorage.getItem('user_token');
     let isProf = false;
@@ -97,6 +99,18 @@ export default function Recados() {
         try {
             const res = await api.get('/api/recados');
             setRecados(res.data);
+            // Load professor names via /api/usuarios/nomes
+            const profIds = [...new Set(res.data.map(r => r.prof))];
+            if (profIds.length > 0) {
+                try {
+                    const nomesRes = await api.get(`/api/usuarios/nomes?ids=${profIds.join(',')}`);
+                    const names = {};
+                    nomesRes.data.forEach(p => { names[p.id] = p.nome; });
+                    setProfNames(names);
+                } catch {
+                    // names will fall back to "Professor"
+                }
+            }
         } catch (err) {
             console.error('Erro ao buscar recados:', err);
         } finally {
@@ -107,8 +121,8 @@ export default function Recados() {
     async function handleCriar() {
         if (!editData.texto.trim()) { alert('Informe o texto do recado.'); return; }
         try {
-            await api.post('/api/recados', { prof: parseInt(userId), texto: editData.texto, img: editData.img || null });
-            setEditData({ id: null, texto: '', img: '' });
+            await api.post('/api/recados', { prof: parseInt(userId), texto: editData.texto });
+            setEditData({ id: null, texto: '' });
             carregarRecados();
         } catch (err) {
             alert(err.response?.data || 'Erro ao criar recado.');
@@ -117,15 +131,15 @@ export default function Recados() {
 
     async function handleEditar(recado) {
         setIsEdit(true);
-        setEditData({ id: recado.id, texto: recado.texto, img: recado.img || '' });
+        setEditData({ id: recado.id, texto: recado.texto });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     async function handleSalvarEdicao() {
         try {
-            await api.put(`/api/recados/${editData.id}`, { texto: editData.texto, img: editData.img });
+            await api.put(`/api/recados/${editData.id}`, { texto: editData.texto });
             setIsEdit(false);
-            setEditData({ id: null, texto: '', img: '' });
+            setEditData({ id: null, texto: '' });
             carregarRecados();
         } catch (err) {
             alert(err.response?.data || 'Erro ao atualizar recado.');
@@ -158,20 +172,14 @@ export default function Recados() {
                 <ManagementDiv>
                     <h2>{isEdit ? 'Editar recado' : 'Escrever novo recado'}</h2>
                     <Form>
-                        <Textarea name="texto" placeholder="Texto da Postagem"
+                        <Textarea name="texto" placeholder="Texto do recado..."
                             value={editData.texto}
                             onChange={(e) => setEditData({ ...editData, texto: e.target.value })} />
-                        <InputImg id="recado-upload" type="file"
-                            onChange={(e) => setEditData({ ...editData, img: e.target.files[0] })} />
-                        {isEdit && editData.img && typeof editData.img === 'string' && (
-                            <img src={getUploadUrl(editData.img)} alt="Imagem atual"
-                                style={{ width: "200px", borderRadius: "10px", marginTop: "1rem" }} />
-                        )}
-                        <Botao text={isEdit ? "Salvar alterações" : "Criar"}
+                        <Botao text={isEdit ? "Salvar alterações" : "Publicar"}
                             onClick={isEdit ? handleSalvarEdicao : handleCriar} />
                         {isEdit && (
                             <Botao text="Cancelar" bgColor="#6c757d"
-                                onClick={() => { setIsEdit(false); setEditData({ id: null, texto: '', img: '' }); }} />
+                                onClick={() => { setIsEdit(false); setEditData({ id: null, texto: '' }); }} />
                         )}
                     </Form>
                 </ManagementDiv>
@@ -181,24 +189,24 @@ export default function Recados() {
                 <h2>Recados</h2>
                 <ListDiv>
                     {recados.length === 0 ? (
-                        <p>Nenhum recado.</p>
+                        <p style={{ color: '#4A453E' }}>Nenhum recado.</p>
                     ) : recados.map(recado => (
-                        <Card key={recado.id}>
-                            <InfoDiv>
-                                <div>
-                                    <h3>Professor ID: {recado.prof}</h3>
-                                    <DateBadge>{formatarData(recado.data)}</DateBadge>
-                                    <p>{recado.texto}</p>
-                                    {recado.img && <img src={getUploadUrl(recado.img)} alt="Imagem do recado" />}
-                                </div>
-                            </InfoDiv>
-                            {isProf && (
-                                <ActionsDiv>
-                                    <Button onClick={() => handleEditar(recado)}>Editar</Button>
-                                    <Button danger onClick={() => handleRemover(recado.id)}>Apagar</Button>
-                                </ActionsDiv>
-                            )}
-                        </Card>
+                        <RecadoCard key={recado.id}>
+                            <RecadoHeader>
+                                <AuthorInfo>
+                                    <AuthorName>{profNames[recado.prof] || 'Professor'}</AuthorName>
+                                    <Separator>-</Separator>
+                                    <DateText>{formatarData(recado.data)}</DateText>
+                                </AuthorInfo>
+                                {isProf && (
+                                    <ActionsDiv>
+                                        <ActionBtn onClick={() => handleEditar(recado)}>Editar</ActionBtn>
+                                        <ActionBtn danger onClick={() => handleRemover(recado.id)}>Apagar</ActionBtn>
+                                    </ActionsDiv>
+                                )}
+                            </RecadoHeader>
+                            <RecadoBody>{recado.texto}</RecadoBody>
+                        </RecadoCard>
                     ))}
                 </ListDiv>
             </ManagementDiv>

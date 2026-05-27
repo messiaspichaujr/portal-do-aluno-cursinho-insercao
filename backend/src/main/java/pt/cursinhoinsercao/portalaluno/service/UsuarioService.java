@@ -73,6 +73,10 @@ public class UsuarioService {
         return usuarioDAO.listarProfessoresPorStatus(false);
     }
 
+    public Usuario buscarPorId(int id) {
+        return usuarioDAO.buscarPorId(id);
+    }
+
     public List<Usuario> listarEducadoresAtivos() {
         return usuarioDAO.listarProfessoresPorStatus(true);
     }

@@ -29,6 +29,13 @@ const Input = styled.input`
     &:focus { outline: none; border-color: #C49A1A; box-shadow: 0 0 0 2px rgba(196, 154, 26, 0.15); }
 `;
 
+const Select = styled.select`
+    width: 100%; padding: 0.75rem; border: 1px solid #E8E2D6;
+    border-radius: 8px; color: #4A453E; background-color: #FFF;
+    font-family: inherit; font-size: 0.9rem;
+    &:focus { outline: none; border-color: #C49A1A; }
+`;
+
 const ListDiv = styled.div`
     display: flex; flex-direction: column; width: 100%; gap: 1rem;
 `;
@@ -42,7 +49,7 @@ const Card = styled.div`
 
 const InfoDiv = styled.div`
     display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; flex: 1;
-    h3 { margin: 0; font-size: 1rem; color: #1E1B16; }
+    h3 { margin: 0; font-size: 1rem; color: #1E1B16; font-weight: 600; }
     p { margin: 0; font-size: 0.85rem; color: #4A453E; word-break: break-all; line-height: 1.5; }
 `;
 
@@ -64,9 +71,10 @@ const Button = styled.button`
 
 export default function Conteudos() {
     const [conteudos, setConteudos] = useState([]);
+    const [disciplinas, setDisciplinas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
-    const [formData, setFormData] = useState({ id: null, disciplina: '', link: '' });
+    const [formData, setFormData] = useState({ id: null, disciplina: '', link: '', titulo: '' });
 
     const token = localStorage.getItem('user_token');
     let isProf = false;
@@ -74,7 +82,10 @@ export default function Conteudos() {
         try { isProf = jwtDecode(token).tipo === 2; } catch {}
     }
 
-    useEffect(() => { carregarConteudos(); }, []);
+    useEffect(() => {
+        carregarConteudos();
+        carregarDisciplinas();
+    }, []);
 
     async function carregarConteudos() {
         try {
@@ -87,11 +98,22 @@ export default function Conteudos() {
         }
     }
 
-    async function handleCriar() {
-        if (!formData.link.trim()) { alert('Informe o link.'); return; }
+    async function carregarDisciplinas() {
         try {
-            await api.post('/api/conteudos', { disciplina: formData.disciplina ? parseInt(formData.disciplina) : null, link: formData.link });
-            setFormData({ id: null, disciplina: '', link: '' });
+            const res = await api.get('/api/disciplinas');
+            setDisciplinas(res.data);
+        } catch {}
+    }
+
+    async function handleCriar() {
+        if (!formData.link.trim() && !formData.titulo.trim()) { alert('Informe o link ou título.'); return; }
+        try {
+            await api.post('/api/conteudos', {
+                disciplina: formData.disciplina ? parseInt(formData.disciplina) : null,
+                link: formData.link,
+                titulo: formData.titulo
+            });
+            setFormData({ id: null, disciplina: '', link: '', titulo: '' });
             carregarConteudos();
         } catch (err) {
             alert(err.response?.data || 'Erro ao criar conteúdo.');
@@ -101,10 +123,12 @@ export default function Conteudos() {
     async function handleSalvarEdicao() {
         try {
             await api.put(`/api/conteudos/${formData.id}`, {
-                disciplina: formData.disciplina ? parseInt(formData.disciplina) : null, link: formData.link
+                disciplina: formData.disciplina ? parseInt(formData.disciplina) : null,
+                link: formData.link,
+                titulo: formData.titulo
             });
             setIsEdit(false);
-            setFormData({ id: null, disciplina: '', link: '' });
+            setFormData({ id: null, disciplina: '', link: '', titulo: '' });
             carregarConteudos();
         } catch (err) {
             alert(err.response?.data || 'Erro ao atualizar conteúdo.');
@@ -121,6 +145,12 @@ export default function Conteudos() {
         }
     }
 
+    function getDisciplinaName(id) {
+        if (!id) return 'Geral';
+        const d = disciplinas.find(d => d.id === id);
+        return d ? `${d.sigla} - ${d.nome}` : `Disciplina #${id}`;
+    }
+
     if (loading) return <Div><p>Carregando...</p></Div>;
 
     return (
@@ -131,17 +161,24 @@ export default function Conteudos() {
                 <ManagementDiv>
                     <h2>{isEdit ? 'Editar conteúdo' : 'Adicionar novo conteúdo'}</h2>
                     <Form>
-                        <Input name="disciplina" placeholder="ID da Disciplina (opcional)"
-                            value={formData.disciplina}
-                            onChange={(e) => setFormData({ ...formData, disciplina: e.target.value })} />
-                        <Input name="link" placeholder="Link do conteúdo"
+                        <Input name="titulo" placeholder="Título do conteúdo"
+                            value={formData.titulo}
+                            onChange={(e) => setFormData({ ...formData, titulo: e.target.value })} />
+                        <Input name="link" placeholder="Link ou anexo (URL)"
                             value={formData.link}
                             onChange={(e) => setFormData({ ...formData, link: e.target.value })} />
+                        <Select value={formData.disciplina}
+                            onChange={(e) => setFormData({ ...formData, disciplina: e.target.value })}>
+                            <option value="">Disciplina (opcional)</option>
+                            {disciplinas.map(d => (
+                                <option key={d.id} value={d.id}>{d.sigla} - {d.nome}</option>
+                            ))}
+                        </Select>
                         <Botao text={isEdit ? "Salvar alterações" : "Criar"}
                             onClick={isEdit ? handleSalvarEdicao : handleCriar} />
                         {isEdit && (
                             <Botao text="Cancelar" bgColor="#6c757d"
-                                onClick={() => { setIsEdit(false); setFormData({ id: null, disciplina: '', link: '' }); }} />
+                                onClick={() => { setIsEdit(false); setFormData({ id: null, disciplina: '', link: '', titulo: '' }); }} />
                         )}
                     </Form>
                 </ManagementDiv>
@@ -151,20 +188,28 @@ export default function Conteudos() {
                 <h2>Conteúdos</h2>
                 <ListDiv>
                     {conteudos.length === 0 ? (
-                        <p>Nenhum conteúdo cadastrado.</p>
+                        <p style={{ color: '#4A453E' }}>Nenhum conteúdo cadastrado.</p>
                     ) : conteudos.map(c => (
                         <Card key={c.id}>
                             <InfoDiv>
-                                <DisciplineBadge>Disciplina ID: {c.disciplina || 'Geral'}</DisciplineBadge>
-                                <p>{c.link}</p>
+                                <h3>{c.titulo || 'Sem título'}</h3>
+                                <DisciplineBadge>{getDisciplinaName(c.disciplina)}</DisciplineBadge>
+                                {c.link && <p>{c.link}</p>}
                             </InfoDiv>
                             <ActionsDiv>
-                                <Button secondary onClick={() => window.open(c.link, "_blank")}>Ver</Button>
+                                {c.link && <Button secondary onClick={() => window.open(c.link, "_blank")}>Abrir</Button>}
                                 {isProf && (
                                     <>
-                                        <Button onClick={() => { setIsEdit(true); setFormData({ id: c.id, disciplina: c.disciplina || '', link: c.link }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-                                            Editar
-                                        </Button>
+                                        <Button onClick={() => {
+                                            setIsEdit(true);
+                                            setFormData({
+                                                id: c.id,
+                                                disciplina: c.disciplina || '',
+                                                link: c.link || '',
+                                                titulo: c.titulo || ''
+                                            });
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}>Editar</Button>
                                         <Button danger onClick={() => handleRemover(c.id)}>Apagar</Button>
                                     </>
                                 )}

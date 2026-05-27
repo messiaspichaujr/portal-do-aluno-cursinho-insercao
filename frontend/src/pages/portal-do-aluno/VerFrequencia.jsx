@@ -244,6 +244,9 @@ export default function VerFrequencia() {
                 .catch((err) => console.error('Erro ao carregar dados:', err))
                 .finally(() => setLoading(false));
         } else if (userId) {
+            api.get('/api/disciplinas')
+                .then((res) => setDisciplinas(res.data))
+                .catch(() => {});
             loadStudentData();
         }
     }, [userId, isProf]);

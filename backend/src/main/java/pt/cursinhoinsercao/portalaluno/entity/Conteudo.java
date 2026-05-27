@@ -16,6 +16,9 @@ public class Conteudo {
     @Column(name = "link")
     private String link;
 
+    @Column(name = "titulo")
+    private String titulo;
+
     public Conteudo() {}
 
     public int getId() { return id; }
@@ -24,4 +27,6 @@ public class Conteudo {
     public void setDisciplina(Integer disciplina) { this.disciplina = disciplina; }
     public String getLink() { return link; }
     public void setLink(String link) { this.link = link; }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 }

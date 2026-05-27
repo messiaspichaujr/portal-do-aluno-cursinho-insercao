@@ -313,8 +313,8 @@ export default function LancarFrequencia() {
             return;
         }
 
-        const tipoPresente = tiposFrequencia.find((t) => t.tipo === 'Presente');
-        const tipoFalta = tiposFrequencia.find((t) => t.tipo === 'Falta');
+        const tipoPresente = tiposFrequencia.find((t) => t.tipo === 'Presente' || t.tipo === 'P');
+        const tipoFalta = tiposFrequencia.find((t) => t.tipo === 'Falta' || t.tipo === 'F');
 
         if (!tipoPresente || !tipoFalta) {
             alert('Tipos de frequencia nao encontrados. Verifique o cadastro de tipos.');

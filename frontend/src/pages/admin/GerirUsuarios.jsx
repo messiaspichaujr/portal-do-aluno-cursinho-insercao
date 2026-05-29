@@ -205,23 +205,45 @@ export default function GerirUsuarios() {
             const depResponse = await api.get(`/api/usuarios/${usuario.id}/dependencias`);
             const dependencias = depResponse.data;
 
-            if (dependencias === "Sem dependências") {
-                if (window.confirm(`Tem certeza que deseja excluir ${usuario.nome}?`)) {
-                    await api.delete(`/api/usuarios/${usuario.id}`);
-                    showToast("Usuário excluído com sucesso!");
-                    fetchUsuarios();
+            if (usuario.tipo === 2) {
+                if (dependencias === "Sem dependências") {
+                    if (window.confirm(`Professor sem dependências. Inativar conta de ${usuario.nome}?`)) {
+                        await api.delete(`/api/usuarios/${usuario.id}`);
+                        showToast("Professor inativado com sucesso! Histórico preservado.");
+                        fetchUsuarios();
+                    }
+                } else {
+                    if (window.confirm(`Professor com ${dependencias}\n\nA conta será INATIVADA e o histórico PRESERVADO. Continuar?`)) {
+                        await api.delete(`/api/usuarios/${usuario.id}`);
+                        showToast("Professor inativado com sucesso! Histórico preservado.");
+                        fetchUsuarios();
+                    }
                 }
             } else {
-                const msg = `O usuário possui dependências:\n${dependencias}\n\nDeseja excluir o usuário E todas as dependências?`;
-                if (window.confirm(msg)) {
-                    await api.delete(`/api/usuarios/${usuario.id}?excluirDependencias=true`);
-                    showToast("Usuário e dependências excluídos com sucesso!");
-                    fetchUsuarios();
+                if (dependencias === "Sem dependências") {
+                    if (window.confirm(`Tem certeza que deseja excluir ${usuario.nome}?`)) {
+                        await api.delete(`/api/usuarios/${usuario.id}`);
+                        showToast("Usuário excluído com sucesso!");
+                        fetchUsuarios();
+                    }
+                } else {
+                    const msg = `O aluno possui dependências:\n${dependencias}\n\nDeseja excluir o aluno E todas as dependências?`;
+                    if (window.confirm(msg)) {
+                        await api.delete(`/api/usuarios/${usuario.id}?excluirDependencias=true`);
+                        showToast("Aluno e dependências excluídos com sucesso!");
+                        fetchUsuarios();
+                    }
                 }
             }
         } catch (err) {
             console.error(err);
-            showToast(err.response?.data || "Erro ao excluir usuário.", 'error');
+            const msg = err.response?.data || "Erro ao processar solicitação.";
+            if (msg.includes("inativado")) {
+                showToast(msg, 'success');
+                fetchUsuarios();
+            } else {
+                showToast(msg, 'error');
+            }
         } finally {
             setLoading(false);
         }

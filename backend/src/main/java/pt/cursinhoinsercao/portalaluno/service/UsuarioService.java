@@ -213,32 +213,31 @@ public class UsuarioService {
             throw new Exception("Usuário não encontrado.");
         }
 
-        String dependencias = verificarDependencias(id);
-        if (dependencias != null && !excluirDependencias) {
-            throw new Exception("Usuário possui dependências: " + dependencias + " Para excluir, confirme a exclusão das dependências.");
+        if (usuario.getTipo() == 2) {
+            String dependencias = verificarDependencias(id);
+            logger.info("Professor {} possui {} - será inativado (preservando histórico)", id, dependencias != null ? dependencias : "sem dependências");
+            usuario.setAtivo(false);
+            usuarioDAO.atualizar(usuario);
+            throw new Exception("Professor inativado com sucesso. Histórico preservado.");
         }
 
-        if (excluirDependencias) {
-            logger.info("Excluindo usuário {} e suas dependências em cascata", id);
-
-            if (usuario.getTipo() == 2) {
-                DisciplinaProfDAO profDao = new DisciplinaProfDAO();
-                profDao.removerPorProfessor(id);
-
-                RecadoDAO recadoDao = new RecadoDAO();
-                recadoDao.removerPorProfessor(id);
+        if (usuario.getTipo() == 3) {
+            String dependencias = verificarDependencias(id);
+            if (dependencias != null && !excluirDependencias) {
+                throw new Exception("Aluno possui dependências: " + dependencias + " Para excluir, confirme a exclusão das dependências.");
             }
 
-            if (usuario.getTipo() == 3) {
+            if (excluirDependencias) {
+                logger.info("Excluindo aluno {} e suas dependências em cascata", id);
                 NotaDAO notaDao = new NotaDAO();
                 notaDao.removerPorAluno(id);
 
                 FrequenciaDAO freqDao = new FrequenciaDAO();
                 freqDao.removerPorAluno(id);
             }
-        }
 
-        usuarioDAO.remover(usuario);
-        logger.info("Usuário {} excluído com sucesso", id);
+            usuarioDAO.remover(usuario);
+            logger.info("Aluno {} excluído com sucesso", id);
+        }
     }
 }

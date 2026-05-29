@@ -126,19 +126,6 @@ public class UsuarioResource {
         return Response.ok().build();
     }
 
-    @DELETE
-    @Path("/alunos/{id}")
-    @Seguranca
-    @AdminOnly
-    public Response rejeitarOuRemoverAluno(@PathParam("id") int id) {
-        try {
-            usuarioService.excluirUsuario(id, false);
-            return Response.noContent().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        }
-    }
-
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)

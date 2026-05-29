@@ -198,19 +198,7 @@ export default function Cadastro() {
                         </Select>
                     </InputGroup>
 
-                    {formData.tipo === 2 && (
-                        <InputGroup>
-                            <Label>Área do Conhecimento</Label>
-                            <Select id="areaConhecimento" name="areaConhecimento" onChange={handleChange}>
-                                <option value="Ciências da Natureza e Suas Tecnologias">Ciências da Natureza e Suas Tecnologias</option>
-                                <option value="Ciências Humanas e Suas Tecnologias">Ciências Humanas e Suas Tecnologias</option>
-                                <option value="Linguagens e Suas Tecnologias">Linguagens e Suas Tecnologias</option>
-                                <option value="Matemática e Suas Tecnologias">Matemática e Suas Tecnologias</option>
-                                <option value="Redação">Redação</option>
-                            </Select>
-                        </InputGroup>
-                    )}
-
+                    
                     <SubmitButton type="submit" disabled={loading}>
                         {loading ? 'Criando...' : 'Criar Usuário'}
                     </SubmitButton>

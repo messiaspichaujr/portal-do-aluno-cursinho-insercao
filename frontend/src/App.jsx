@@ -11,6 +11,7 @@ import GerirBanners from './pages/admin/GerirBanners';
 import GerirSecoes from './pages/admin/GerirSecoes';
 import GerirRedes from './pages/admin/GerirRedes';
 import GerirRelatorioUnis from './pages/admin/GerirRelatorioUnis';
+import GerirUsuarios from './pages/admin/GerirUsuarios';
 import NovasCandidaturas from './pages/admin/NovasCandidaturas';
 import EducadoresCadastrados from './pages/admin/EducadoresCadastrados';
 import AlunosMatriculados from './pages/admin/AlunosMatriculados';
@@ -56,6 +57,7 @@ export default function App() {
                         <Route path="/admin/educadores/cadastrados" element={<EducadoresCadastrados/>}/>
                         <Route path="/admin/alunos/matriculados" element={<AlunosMatriculados/>}/>
                         <Route path="/admin/alunos/matriculas" element={<NovasMatriculas/>}/>
+                        <Route path="/admin/usuarios" element={<GerirUsuarios/>}/>
                         <Route path="/admin/criar-conta" element={<Cadastro/>}/>
                         <Route path="/admin/disciplinas" element={<GerirDisciplinas/>}/>
                     </Route>

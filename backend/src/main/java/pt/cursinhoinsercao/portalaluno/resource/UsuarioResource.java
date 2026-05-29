@@ -2,6 +2,7 @@ package pt.cursinhoinsercao.portalaluno.resource;
 
 import pt.cursinhoinsercao.portalaluno.dto.Login;
 import pt.cursinhoinsercao.portalaluno.dto.LoginResponse;
+import pt.cursinhoinsercao.portalaluno.dto.UsuarioDTO;
 import pt.cursinhoinsercao.portalaluno.entity.Usuario;
 import pt.cursinhoinsercao.portalaluno.seguranca.AdminOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.Seguranca;
@@ -141,5 +142,20 @@ public class UsuarioResource {
     public Response rejeitarOuRemoverAluno(@PathParam("id") int id) {
         usuarioService.rejeitarOuRemoverAluno(id);
         return Response.noContent().build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    @AdminOnly
+    public Response atualizarUsuario(@PathParam("id") int id, UsuarioDTO dto) {
+        try {
+            Usuario usuarioAtualizado = usuarioService.atualizar(id, dto);
+            return Response.ok(usuarioAtualizado).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 }

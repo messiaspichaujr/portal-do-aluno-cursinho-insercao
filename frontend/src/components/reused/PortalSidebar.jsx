@@ -225,7 +225,10 @@ const DropdownGroup = ({ title, icon, children, isCollapsed }) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <MenuGroup>
-            <GroupHeader className={isCollapsed ? 'collapsed' : ''} onClick={() => setIsOpen(!isOpen)}>
+            <GroupHeader
+                className={isCollapsed ? 'collapsed' : ''}
+                onClick={() => setIsOpen(!isOpen)}
+                title="Clique para expandir/recolher opções">
                 <GroupTitle>{title}</GroupTitle>
                 <ExpandIcon $isOpen={isOpen}>&#9660;</ExpandIcon>
                 <IconDisplay>{icon}</IconDisplay>

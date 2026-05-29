@@ -282,6 +282,11 @@ export default function AdminSidebar({ isCollapsed, toggleSidebar }) {
       id: 6, title: 'Criar Conta', icon: '👤', submenu: [
         { title: 'Novo Usuário', to: '/admin/criar-conta' }
       ]
+    },
+    {
+      id: 8, title: 'Gerir Usuários', icon: '👥', submenu: [
+        { title: 'Usuários Cadastrados', to: '/admin/usuarios' }
+      ]
     }
   ];
 

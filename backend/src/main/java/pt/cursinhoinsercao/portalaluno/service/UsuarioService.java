@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.dao.UsuarioDAO;
 import pt.cursinhoinsercao.portalaluno.dto.Login;
+import pt.cursinhoinsercao.portalaluno.dto.UsuarioDTO;
 import pt.cursinhoinsercao.portalaluno.entity.Disciplina;
 import pt.cursinhoinsercao.portalaluno.entity.DisciplinaAluno;
 import pt.cursinhoinsercao.portalaluno.entity.Usuario;
@@ -133,5 +134,47 @@ public class UsuarioService {
         if (usuario != null && usuario.getTipo() == 3) {
             usuarioDAO.remover(usuario);
         }
+    }
+
+    public Usuario atualizar(int id, UsuarioDTO dto) throws Exception {
+        Usuario usuario = usuarioDAO.buscarPorId(id);
+
+        if (usuario == null) {
+            throw new Exception("Usuário não encontrado com o ID: " + id);
+        }
+
+        if (dto.getNome() != null && !dto.getNome().trim().isEmpty()) {
+            if (dto.getNome().trim().length() < 3) {
+                throw new Exception("Nome deve ter pelo menos 3 caracteres.");
+            }
+            usuario.setNome(dto.getNome());
+        }
+
+        if (dto.getEmail() != null && !dto.getEmail().trim().isEmpty()) {
+            if (!dto.getEmail().matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                throw new Exception("Email inválido.");
+            }
+            if (!dto.getEmail().equals(usuario.getEmail())) {
+                Usuario emailExistente = usuarioDAO.buscarPorEmail(dto.getEmail());
+                if (emailExistente != null && emailExistente.getId() != id) {
+                    throw new Exception("Este email já está a ser utilizado.");
+                }
+                usuario.setEmail(dto.getEmail());
+            }
+        }
+
+        if (dto.getSenha() != null && !dto.getSenha().trim().isEmpty()) {
+            if (dto.getSenha().length() < 6) {
+                throw new Exception("A senha deve ter pelo menos 6 caracteres.");
+            }
+            usuario.setSenha(PasswordUtil.hash(dto.getSenha()));
+        }
+
+        if (dto.getAtivo() != null) {
+            usuario.setAtivo(dto.getAtivo());
+        }
+
+        usuarioDAO.atualizar(usuario);
+        return usuario;
     }
 }

@@ -11,8 +11,8 @@ public class Recado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "assinatura", length = 100)
-    private String assinatura;
+    @Column(name = "prof", nullable = false)
+    private int prof;
 
     @Column(name = "texto", nullable = false)
     private String texto;
@@ -27,8 +27,8 @@ public class Recado {
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
-    public String getAssinatura() { return assinatura; }
-    public void setAssinatura(String assinatura) { this.assinatura = assinatura; }
+    public int getProf() { return prof; }
+    public void setProf(int prof) { this.prof = prof; }
     public String getTexto() { return texto; }
     public void setTexto(String texto) { this.texto = texto; }
     public LocalDateTime getData() { return data; }

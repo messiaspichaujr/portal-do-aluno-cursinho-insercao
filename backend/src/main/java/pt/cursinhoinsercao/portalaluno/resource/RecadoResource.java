@@ -1,7 +1,6 @@
 package pt.cursinhoinsercao.portalaluno.resource;
 
 import pt.cursinhoinsercao.portalaluno.entity.Recado;
-import pt.cursinhoinsercao.portalaluno.seguranca.AdminOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.ProfessorOnly;
 import pt.cursinhoinsercao.portalaluno.seguranca.Seguranca;
 import pt.cursinhoinsercao.portalaluno.service.RecadoService;
@@ -24,6 +23,15 @@ public class RecadoResource {
         return Response.ok(recados).build();
     }
 
+    @GET
+    @Path("/professor/{profId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Seguranca
+    public Response buscarPorProfessor(@PathParam("profId") int profId) {
+        List<Recado> recados = recadoService.buscarPorProfessor(profId);
+        return Response.ok(recados).build();
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -41,9 +49,8 @@ public class RecadoResource {
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     @Seguranca
-    @AdminOnly
+    @ProfessorOnly
     public Response atualizar(@PathParam("id") int id, Recado recado) {
         try {
             recado.setId(id);
@@ -57,7 +64,7 @@ public class RecadoResource {
     @DELETE
     @Path("/{id}")
     @Seguranca
-    @AdminOnly
+    @ProfessorOnly
     public Response remover(@PathParam("id") int id) {
         try {
             recadoService.remover(id);

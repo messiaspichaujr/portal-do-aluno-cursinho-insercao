@@ -14,8 +14,8 @@ public class RecadoService {
         if (recado.getTexto() == null || recado.getTexto().trim().isEmpty()) {
             throw new Exception("Texto do recado é obrigatório.");
         }
-        if (recado.getAssinatura() == null || recado.getAssinatura().trim().isEmpty()) {
-            throw new Exception("Assinatura é obrigatória.");
+        if (recado.getProf() <= 0) {
+            throw new Exception("Professor inválido.");
         }
         if (recado.getData() == null) {
             recado.setData(LocalDateTime.now());
@@ -28,6 +28,10 @@ public class RecadoService {
         return recadoDAO.buscarTodos();
     }
 
+    public List<Recado> buscarPorProfessor(int profId) {
+        return recadoDAO.buscarPorProfessor(profId);
+    }
+
     public void atualizar(Recado recado) throws Exception {
         Recado existente = recadoDAO.buscarPorId(recado.getId());
         if (existente == null) {
@@ -36,9 +40,6 @@ public class RecadoService {
         if (recado.getTexto() != null) {
             existente.setTexto(recado.getTexto());
         }
-        if (recado.getAssinatura() != null) {
-            existente.setAssinatura(recado.getAssinatura());
-        }
         if (recado.getImg() != null) {
             existente.setImg(recado.getImg());
         }
@@ -46,7 +47,7 @@ public class RecadoService {
     }
 
     public void remover(int id) throws Exception {
-        Recado existente = recadoDAO.buscarPorId(recado.getId());
+        Recado existente = recadoDAO.buscarPorId(id);
         if (existente == null) {
             throw new Exception("Recado não encontrado.");
         }

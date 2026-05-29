@@ -207,15 +207,15 @@ export default function GerirUsuarios() {
 
             if (usuario.tipo === 2) {
                 if (dependencias === "Sem dependências") {
-                    if (window.confirm(`Excluir professor ${usuario.nome}?`)) {
+                    if (window.confirm(`Professor sem dependências. Inativar conta de ${usuario.nome}?`)) {
                         await api.delete(`/api/usuarios/${usuario.id}`);
-                        showToast("Professor excluído com sucesso!");
+                        showToast("Professor inativado com sucesso! Histórico preservado.");
                         fetchUsuarios();
                     }
                 } else {
-                    if (window.confirm(`Professor com ${dependencias}\n\nOs dados serão MANTIDOS e o professor excluído. Continuar?`)) {
+                    if (window.confirm(`Professor com ${dependencias}\n\nA conta será INATIVADA e o histórico PRESERVADO. Continuar?`)) {
                         await api.delete(`/api/usuarios/${usuario.id}`);
-                        showToast("Professor excluído! Dados mantidos.");
+                        showToast("Professor inativado com sucesso! Histórico preservado.");
                         fetchUsuarios();
                     }
                 }
@@ -238,7 +238,7 @@ export default function GerirUsuarios() {
         } catch (err) {
             console.error(err);
             const msg = err.response?.data || "Erro ao processar solicitação.";
-            if (msg.includes("excluído")) {
+            if (msg.includes("inativado")) {
                 showToast(msg, 'success');
                 fetchUsuarios();
             } else {

@@ -131,8 +131,12 @@ public class UsuarioResource {
     @Seguranca
     @AdminOnly
     public Response rejeitarOuRemoverAluno(@PathParam("id") int id) {
-        usuarioService.rejeitarOuRemoverAluno(id);
-        return Response.noContent().build();
+        try {
+            usuarioService.excluirUsuario(id, false);
+            return Response.noContent().build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
     }
 
     @PUT

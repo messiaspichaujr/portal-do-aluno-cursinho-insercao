@@ -6,7 +6,6 @@ import pt.cursinhoinsercao.portalaluno.dao.UsuarioDAO;
 import pt.cursinhoinsercao.portalaluno.dao.DisciplinaProfDAO;
 import pt.cursinhoinsercao.portalaluno.dao.FrequenciaDAO;
 import pt.cursinhoinsercao.portalaluno.dao.NotaDAO;
-import pt.cursinhoinsercao.portalaluno.dao.RecadoDAO;
 import pt.cursinhoinsercao.portalaluno.dto.Login;
 import pt.cursinhoinsercao.portalaluno.dto.UsuarioDTO;
 import pt.cursinhoinsercao.portalaluno.entity.Disciplina;
@@ -182,12 +181,6 @@ public class UsuarioService {
             if (disciplinas > 0) {
                 dependencias.append(disciplinas).append(" disciplina(s) associada(s); ");
             }
-
-            RecadoDAO recadoDao = new RecadoDAO();
-            int recados = recadoDao.contarPorProfessor(id);
-            if (recados > 0) {
-                dependencias.append(recados).append(" recado(s); ");
-            }
         }
 
         if (usuario.getTipo() == 3) {
@@ -215,10 +208,13 @@ public class UsuarioService {
 
         if (usuario.getTipo() == 2) {
             String dependencias = verificarDependencias(id);
-            logger.info("Professor {} possui {} - será inativado (preservando histórico)", id, dependencias != null ? dependencias : "sem dependências");
-            usuario.setAtivo(false);
-            usuarioDAO.atualizar(usuario);
-            throw new Exception("Professor inativado com sucesso. Histórico preservado.");
+            if (dependencias != null && !excluirDependencias) {
+                throw new Exception("Professor possui dependências: " + dependencias + " Os dados serão mantidos e o professor excluído.");
+            }
+
+            logger.info("Excluindo professor {} - mantendo disciplinas associadas", id);
+            usuarioDAO.remover(usuario);
+            logger.info("Professor {} excluído com sucesso. Disciplinas preservadas.", id);
         }
 
         if (usuario.getTipo() == 3) {

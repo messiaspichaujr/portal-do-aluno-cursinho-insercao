@@ -23,6 +23,12 @@ const Form = styled.div`
     flex-grow: 1; border-radius: 1rem; gap: 1rem; align-items: center;
 `;
 
+const Input = styled.input`
+    width: 100%; padding: 0.7rem; border: 1px solid #E8E2D6; border-radius: 8px;
+    font-size: 0.9rem; background-color: #FFF; color: #4A453E;
+    &:focus { outline: none; border-color: #C49A1A; box-shadow: 0 0 0 2px rgba(196, 154, 26, 0.15); }
+`;
+
 const Textarea = styled.textarea`
     width: 100%; padding: 0.8rem; border: 1px solid #E8E2D6; border-radius: 8px;
     min-height: 120px; resize: vertical; font-family: inherit; font-size: 0.9rem;
@@ -67,6 +73,11 @@ const RecadoBody = styled.p`
     font-size: 0.9rem; color: #4A453E; line-height: 1.6;
 `;
 
+const Signature = styled.p`
+    margin-top: 1rem; text-align: right; font-style: italic;
+    color: #4A453E; font-size: 0.85rem;
+`;
+
 const ActionsDiv = styled.div` display: flex; gap: 0.5rem; `;
 
 const ActionBtn = styled.button`
@@ -80,17 +91,14 @@ export default function Recados() {
     const [recados, setRecados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
-    const [editData, setEditData] = useState({ id: null, texto: '' });
-    const [profNames, setProfNames] = useState({});
+    const [editData, setEditData] = useState({ id: null, texto: '', assinatura: '' });
 
     const token = localStorage.getItem('user_token');
     let isProf = false;
-    let userId = null;
     if (token) {
         try {
             const decoded = jwtDecode(token);
             isProf = decoded.tipo === 2;
-            userId = decoded.sub;
         } catch {}
     }
 
@@ -100,18 +108,6 @@ export default function Recados() {
         try {
             const res = await api.get('/api/recados');
             setRecados(res.data);
-            // Load professor names via /api/usuarios/nomes
-            const profIds = [...new Set(res.data.map(r => r.prof))];
-            if (profIds.length > 0) {
-                try {
-                    const nomesRes = await api.get(`/api/usuarios/nomes?ids=${profIds.join(',')}`);
-                    const names = {};
-                    nomesRes.data.forEach(p => { names[p.id] = p.nome; });
-                    setProfNames(names);
-                } catch {
-                    // names will fall back to "Professor"
-                }
-            }
         } catch (err) {
             console.error('Erro ao buscar recados:', err);
         } finally {
@@ -121,9 +117,13 @@ export default function Recados() {
 
     async function handleCriar() {
         if (!editData.texto.trim()) { alert('Informe o texto do recado.'); return; }
+        if (!editData.assinatura.trim()) { alert('Informe a assinatura.'); return; }
         try {
-            await api.post('/api/recados', { prof: parseInt(userId), texto: editData.texto });
-            setEditData({ id: null, texto: '' });
+            await api.post('/api/recados', {
+                texto: editData.texto,
+                assinatura: editData.assinatura
+            });
+            setEditData({ id: null, texto: '', assinatura: '' });
             carregarRecados();
         } catch (err) {
             alert(err.response?.data || 'Erro ao criar recado.');
@@ -132,15 +132,18 @@ export default function Recados() {
 
     async function handleEditar(recado) {
         setIsEdit(true);
-        setEditData({ id: recado.id, texto: recado.texto });
+        setEditData({ id: recado.id, texto: recado.texto, assinatura: recado.assinatura || '' });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     async function handleSalvarEdicao() {
         try {
-            await api.put(`/api/recados/${editData.id}`, { texto: editData.texto });
+            await api.put(`/api/recados/${editData.id}`, {
+                texto: editData.texto,
+                assinatura: editData.assinatura
+            });
             setIsEdit(false);
-            setEditData({ id: null, texto: '' });
+            setEditData({ id: null, texto: '', assinatura: '' });
             carregarRecados();
         } catch (err) {
             alert(err.response?.data || 'Erro ao atualizar recado.');
@@ -176,11 +179,14 @@ export default function Recados() {
                         <Textarea name="texto" placeholder="Texto do recado..."
                             value={editData.texto}
                             onChange={(e) => setEditData({ ...editData, texto: e.target.value })} />
+                        <Input name="assinatura" placeholder="Assinatura (ex: Prof. João Silva)"
+                            value={editData.assinatura}
+                            onChange={(e) => setEditData({ ...editData, assinatura: e.target.value })} />
                         <Botao text={isEdit ? "Salvar alterações" : "Publicar"}
                             onClick={isEdit ? handleSalvarEdicao : handleCriar} />
                         {isEdit && (
                             <Botao text="Cancelar" bgColor="#6c757d"
-                                onClick={() => { setIsEdit(false); setEditData({ id: null, texto: '' }); }} />
+                                onClick={() => { setIsEdit(false); setEditData({ id: null, texto: '', assinatura: '' }); }} />
                         )}
                     </Form>
                 </ManagementDiv>
@@ -195,7 +201,7 @@ export default function Recados() {
                         <RecadoCard key={recado.id}>
                             <RecadoHeader>
                                 <AuthorInfo>
-                                    <AuthorName>{profNames[recado.prof] || 'Professor'}</AuthorName>
+                                    <AuthorName>{recado.assinatura || 'Professor'}</AuthorName>
                                     <Separator>-</Separator>
                                     <DateText>{formatarData(recado.data)}</DateText>
                                 </AuthorInfo>
@@ -207,6 +213,9 @@ export default function Recados() {
                                 )}
                             </RecadoHeader>
                             <RecadoBody>{recado.texto}</RecadoBody>
+                            {recado.assinatura && (
+                                <Signature>Atenciosamente,{<br />}{recado.assinatura}</Signature>
+                            )}
                         </RecadoCard>
                     ))}
                 </ListDiv>

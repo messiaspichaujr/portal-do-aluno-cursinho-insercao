@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import PortalSidebar from '../components/reused/PortalSidebar';
+
+const fadeIn = keyframes`
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+`;
 
 const AdminContainer = styled.div`
     display: flex;
     min-height: 100vh;
-    background-color: #f8f9fa; 
+    background-color: #f8f9fa;
 `;
 
 const ContentWrapper = styled.div`
@@ -21,6 +26,7 @@ const MainContent = styled.main`
     flex-grow: 1;
     padding: 2rem;
     overflow-y: auto;
+    animation: ${fadeIn} 0.4s ease-out;
 `;
 
 export default function PortalLayout() {
@@ -32,9 +38,9 @@ export default function PortalLayout() {
 
     return (
         <AdminContainer>
-            <PortalSidebar 
-                isCollapsed={isSidebarCollapsed} 
-                toggleSidebar={toggleSidebar} 
+            <PortalSidebar
+                isCollapsed={isSidebarCollapsed}
+                toggleSidebar={toggleSidebar}
             />
             <ContentWrapper $isSidebarCollapsed={isSidebarCollapsed}>
                 <MainContent>

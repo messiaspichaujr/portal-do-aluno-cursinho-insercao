@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Cadastro from './pages/Cadastro';
 import CadastroPublico from './pages/CadastroPublico';
 import LoginPage from './pages/LoginPage';
+import PageTransition from './components/PageTransition';
 
 // --- Páginas de Administração ---
 import GerirBanners from './pages/admin/GerirBanners';
@@ -36,14 +37,15 @@ import NotFound from './pages/NotFound';
 export default function App() {
     return (
         <BrowserRouter>
-            <Routes>
-                {/* ========== ROTAS PÚBLICAS ========== */}
-                <Route path="/" element={<Navigate to="/home" replace/>}/>
-                <Route path="/home" element={<Home/>}/>
-                <Route path="/admin" element={<Navigate to="/admin/login" replace/>}/>
-                <Route path="/admin/login" element={<LoginPage/>}/>
-                <Route path="/portal/login" element={<LoginPage/>}/>
-                <Route path="/cadastro" element={<CadastroPublico/>}/>
+            <PageTransition>
+                <Routes>
+                    {/* ========== ROTAS PÚBLICAS ========== */}
+                    <Route path="/" element={<Navigate to="/home" replace/>}/>
+                    <Route path="/home" element={<Home/>}/>
+                    <Route path="/admin" element={<Navigate to="/admin/login" replace/>}/>
+                    <Route path="/admin/login" element={<LoginPage/>}/>
+                    <Route path="/portal/login" element={<LoginPage/>}/>
+                    <Route path="/cadastro" element={<CadastroPublico/>}/>
 
                 {/* ========== ROTAS PROTEGIDAS DO PAINEL DE ADMINISTRAÇÃO ========== */}
                 <Route element={<ProtectedRoute allowedRoles={[1]}/>}>
@@ -77,9 +79,10 @@ export default function App() {
                     </Route>
                 </Route>
 
-                {/* ========== 404 ========== */}
-                <Route path="*" element={<NotFound/>}/>
-            </Routes>
+                    {/* ========== 404 ========== */}
+                    <Route path="*" element={<NotFound/>}/>
+                </Routes>
+            </PageTransition>
         </BrowserRouter>
     );
 }

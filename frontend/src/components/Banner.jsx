@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import bannerReserva from "../assets/imgs/img_capa_exemplo.jpg";
 
@@ -23,6 +24,18 @@ const HeroImage = styled.img`
     height: 100%;
     object-fit: cover;
     object-position: center;
+    transition: opacity 0.5s ease-in-out;
+`;
+
+const Placeholder = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #C49A1A 0%, #F2B924 50%, #F5C542 100%);
+    opacity: ${props => props.loaded ? 0 : 1};
+    transition: opacity 0.5s ease-in-out;
 `;
 
 const Overlay = styled.div`
@@ -90,12 +103,30 @@ const HeroCTA = styled.a`
     }
 `;
 
-export default function Banner({ imagemUrl }) {
+export default function Banner({ imagemUrl, loading = false }) {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const imgRef = useRef();
+
+    useEffect(() => {
+        if (imgRef.current && imgRef.current.complete) {
+            setImageLoaded(true);
+        }
+    }, []);
+
+    const handleImageLoad = () => {
+        setImageLoaded(true);
+    };
+
     return (
         <HeroSection>
+            <Placeholder loaded={imageLoaded || !imagemUrl} />
             <HeroImage
+                ref={imgRef}
                 src={imagemUrl || bannerReserva}
                 alt="Banner Cursinho Inserção"
+                loading="eager"
+                onLoad={handleImageLoad}
+                style={{ opacity: imageLoaded || !imagemUrl ? 1 : 0 }}
             />
             <Overlay />
             <HeroContent>

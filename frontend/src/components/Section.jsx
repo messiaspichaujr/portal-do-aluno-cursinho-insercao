@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { getUploadUrl } from '../services/uploads';
 
@@ -77,13 +78,34 @@ const ImageWrapper = styled.div`
     position: relative;
 `;
 
+const Placeholder = styled.div`
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #E8E2D6 0%, #F5F0E8 100%);
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: ${props => props.$loaded ? 0 : 1};
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1;
+
+    @media (max-width: 768px) {
+        height: 250px;
+        border-radius: 16px;
+    }
+`;
+
 const SectionImage = styled.img`
     width: 100%;
     height: 400px;
     object-fit: cover;
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-    transition: transform 0.4s ease;
+    transition: transform 0.4s ease, opacity 0.5s ease-in-out;
+    opacity: ${props => props.$loaded ? 1 : 0};
+    position: relative;
+    z-index: 2;
 
     &:hover {
         transform: scale(1.02);
@@ -114,8 +136,36 @@ const TextOnlyContent = styled.div`
 `;
 
 export default function Section({ titulo, imagem, texto, index }) {
+    const [imageLoaded, setImageLoaded] = useState(false);
+    const imgRef = useRef();
+
     const even = index % 2 === 0;
     const reverse = index % 2 !== 0;
+
+    const handleImageLoad = () => {
+        setImageLoaded(true);
+    };
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && imgRef.current) {
+                        imgRef.current.src = imgRef.current.dataset.src;
+                        imgRef.current.onload = handleImageLoad;
+                        observer.disconnect();
+                    }
+                });
+            },
+            { rootMargin: '50px' }
+        );
+
+        if (imgRef.current) {
+            observer.observe(imgRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, []);
 
     if (!imagem) {
         return (
@@ -141,7 +191,13 @@ export default function Section({ titulo, imagem, texto, index }) {
                     </TextContent>
                     <ImageWrapper>
                         <DecorationDot $reverse={reverse} />
-                        <SectionImage src={getUploadUrl(imagem)} alt={titulo} />
+                        <Placeholder $loaded={imageLoaded} />
+                        <SectionImage
+                            ref={imgRef}
+                            data-src={getUploadUrl(imagem)}
+                            alt={titulo}
+                            $loaded={imageLoaded}
+                        />
                     </ImageWrapper>
                 </ContentRow>
             </SectionInner>

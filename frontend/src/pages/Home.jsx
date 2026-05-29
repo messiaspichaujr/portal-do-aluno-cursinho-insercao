@@ -11,33 +11,13 @@ import styled, { keyframes } from 'styled-components';
 
 import '../global.css';
 
-const LoadingContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    font-size: 1.2rem;
-    color: #C49A1A;
-`;
-
-const ErrorContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    font-size: 1rem;
-    color: #E8445A;
-    padding: 2rem;
-    text-align: center;
-`;
-
 const fadeIn = keyframes`
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 `;
 
 const PageContent = styled.div`
-    animation: ${fadeIn} 0.6s ease-out;
+    animation: ${fadeIn} 0.8s ease-out;
 `;
 
 const CTASection = styled.section`
@@ -90,41 +70,40 @@ export default function Home() {
     const [secoes, setSecoes] = useState([]);
     const [bannerUrl, setBannerUrl] = useState('');
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resSecoes = await api.get('/api/secoes');
-                setSecoes(resSecoes.data);
-            } catch (err) {
-                console.error("Erro ao buscar seções:", err);
-            }
+                // Carregar em paralelo para maior velocidade
+                const [resSecoes, resBanner] = await Promise.allSettled([
+                    api.get('/api/secoes'),
+                    api.get('/api/banners/ativo').catch(() => null)
+                ]);
 
-            try {
-                const resBanner = await api.get('/api/banners/ativo');
-                setBannerUrl(getUploadUrl(resBanner.data.imagem));
-            } catch (err) {
-                console.log("Nenhum banner ativo, usando imagem padrão.");
-            }
+                if (resSecoes.status === 'fulfilled') {
+                    setSecoes(resSecoes.value.data);
+                }
 
-            setLoading(false);
+                if (resBanner.status === 'fulfilled' && resBanner.value) {
+                    setBannerUrl(getUploadUrl(resBanner.value.data.imagem));
+                }
+            } catch (err) {
+                console.error("Erro ao buscar dados:", err);
+            } finally {
+                setLoading(false);
+            }
         };
         fetchData();
     }, []);
 
     if (loading) {
-        return <LoadingContainer><Loading /></LoadingContainer>;
-    }
-
-    if (error) {
-        return <ErrorContainer>Erro ao carregar a página. Tente novamente mais tarde.</ErrorContainer>;
+        return <PageContent><Loading /></PageContent>;
     }
 
     return (
         <PageContent>
             <Navbar />
-            <Banner imagemUrl={bannerUrl} />
+            <Banner imagemUrl={bannerUrl} loading={loading} />
 
             {secoes.map((secao, index) => (
                 <Section

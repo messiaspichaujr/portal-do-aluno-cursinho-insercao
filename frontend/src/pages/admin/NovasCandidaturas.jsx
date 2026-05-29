@@ -37,6 +37,17 @@ const ManagementDiv = styled.section`
     }
 `;
 
+const NoticeBox = styled.div`
+    background-color: #FFF3CD;
+    border: 1px solid #FFC107;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #856404;
+    font-size: 0.9rem;
+    line-height: 1.5;
+`;
+
 const ListDiv = styled.div`
     display: flex;
     flex-direction: column;
@@ -157,7 +168,7 @@ export default function NovasCandidaturas() {
         try {
             await api.put(`/api/usuarios/${id}/aprovar`);
             showToast("Candidatura aprovada com sucesso!");
-            fetchCandidaturas(); 
+            fetchCandidaturas();
         } catch {
             showToast("Erro ao aprovar a candidatura.", 'error');
         } finally {
@@ -171,7 +182,7 @@ export default function NovasCandidaturas() {
             try {
                 await api.delete(`/api/usuarios/${id}`);
                 showToast("Candidatura rejeitada com sucesso.");
-                fetchCandidaturas(); 
+                fetchCandidaturas();
             } catch {
                 showToast("Erro ao rejeitar a candidatura.", 'error');
             } finally {
@@ -186,6 +197,9 @@ export default function NovasCandidaturas() {
             <h1>Novas Candidaturas de Educadores</h1>
 
             <ManagementDiv>
+                <NoticeBox>
+                    ⚠️ Para aprovar ou rejeitar candidaturas, editar ou excluir educadores, utilize o menu <strong>Gestão de Usuários &gt; Usuários Cadastrados</strong>.
+                </NoticeBox>
                 {loading && <p>A carregar candidaturas...</p>}
 
                 {!loading && candidaturas.length === 0 && (
@@ -197,16 +211,8 @@ export default function NovasCandidaturas() {
                         <Card key={user.id}>
                             <InfoDiv>
                                 <span>{user.nome}</span>
-                                
+
                             </InfoDiv>
-                            <ActionsDiv>
-                                <Button className="approve" onClick={() => handleAprovar(user.id)} disabled={loading}>
-                                    Aprovar ✔
-                                </Button>
-                                <Button className="reject" onClick={() => handleRejeitar(user.id)} disabled={loading}>
-                                    Rejeitar ✖
-                                </Button>
-                            </ActionsDiv>
                         </Card>
                     ))}
                 </ListDiv>

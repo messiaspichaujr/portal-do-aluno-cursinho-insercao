@@ -160,8 +160,21 @@ public class UsuarioResource {
     @AdminOnly
     public Response excluirUsuario(@PathParam("id") int id, @QueryParam("excluirDependencias") boolean excluirDependencias) {
         try {
-            usuarioService.excluirUsuario(id, excluirDependencias);
-            return Response.ok().entity("Usuário excluído com sucesso.").build();
+            String mensagem = usuarioService.excluirUsuario(id, excluirDependencias);
+            return Response.ok().entity(mensagem).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/alunos/{id}")
+    @Seguranca
+    @AdminOnly
+    public Response rejeitarOuRemoverAluno(@PathParam("id") int id) {
+        try {
+            String mensagem = usuarioService.excluirUsuario(id, false);
+            return Response.ok().entity(mensagem).build();
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }

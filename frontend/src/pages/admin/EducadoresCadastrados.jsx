@@ -37,6 +37,17 @@ const ManagementDiv = styled.section`
     }
 `;
 
+const NoticeBox = styled.div`
+    background-color: #FFF3CD;
+    border: 1px solid #FFC107;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #856404;
+    font-size: 0.9rem;
+    line-height: 1.5;
+`;
+
 const ListDiv = styled.div`
     display: flex;
     flex-direction: column;
@@ -139,11 +150,11 @@ export default function EducadoresCadastrados() {
         if (window.confirm("Tem a certeza que quer remover este educador? A ação não pode ser desfeita.")) {
             setLoading(true);
             try {
-               
+
                 await api.delete(`/api/usuarios/${id}`);
                 showToast("Educador removido com sucesso.");
-                fetchEducadores(); 
-                
+                fetchEducadores();
+
             } catch (err) {
 
                 console.error("Erro ao remover educador:", err);
@@ -161,6 +172,9 @@ export default function EducadoresCadastrados() {
             <h1>Educadores Cadastrados</h1>
 
             <ManagementDiv>
+                <NoticeBox>
+                    ⚠️ Para cadastrar, editar ou excluir educadores, utilize o menu <strong>Gestão de Usuários &gt; Usuários Cadastrados</strong>.
+                </NoticeBox>
                 {loading && <p>A carregar educadores...</p>}
 
                 {!loading && educadores.length === 0 && (
@@ -173,11 +187,6 @@ export default function EducadoresCadastrados() {
                             <InfoDiv>
                                 <span>{user.nome}</span>
                             </InfoDiv>
-                            <ActionsDiv>
-                                <Button danger onClick={() => handleRemover(user.id)} disabled={loading}>
-                                    Remover
-                                </Button>
-                            </ActionsDiv>
                         </Card>
                     ))}
                 </ListDiv>

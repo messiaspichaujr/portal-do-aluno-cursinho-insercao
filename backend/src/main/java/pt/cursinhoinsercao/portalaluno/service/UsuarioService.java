@@ -207,7 +207,7 @@ public class UsuarioService {
         return dependencias.length() > 0 ? dependencias.toString() : null;
     }
 
-    public void excluirUsuario(int id, boolean excluirDependencias) throws Exception {
+    public String excluirUsuario(int id, boolean excluirDependencias) throws Exception {
         Usuario usuario = usuarioDAO.buscarPorId(id);
         if (usuario == null) {
             throw new Exception("Usuário não encontrado.");
@@ -218,7 +218,7 @@ public class UsuarioService {
             logger.info("Professor {} possui {} - será inativado (preservando histórico)", id, dependencias != null ? dependencias : "sem dependências");
             usuario.setAtivo(false);
             usuarioDAO.atualizar(usuario);
-            throw new Exception("Professor inativado com sucesso. Histórico preservado.");
+            return "Professor inativado com sucesso. Histórico preservado.";
         }
 
         if (usuario.getTipo() == 3) {
@@ -238,6 +238,9 @@ public class UsuarioService {
 
             usuarioDAO.remover(usuario);
             logger.info("Aluno {} excluído com sucesso", id);
+            return "Aluno excluído com sucesso.";
         }
+
+        throw new Exception("Tipo de usuário não suportado para exclusão.");
     }
 }

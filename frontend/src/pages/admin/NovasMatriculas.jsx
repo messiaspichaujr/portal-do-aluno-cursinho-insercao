@@ -37,6 +37,17 @@ const ManagementDiv = styled.section`
     }
 `;
 
+const NoticeBox = styled.div`
+    background-color: #FFF3CD;
+    border: 1px solid #FFC107;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #856404;
+    font-size: 0.9rem;
+    line-height: 1.5;
+`;
+
 const ListDiv = styled.div`
     display: flex;
     flex-direction: column;
@@ -157,7 +168,7 @@ export default function NovasMatriculas() {
         try {
             await api.put(`/api/usuarios/alunos/${id}/aprovar`);
             showToast("Matrícula aprovada com sucesso!");
-            fetchMatriculas(); 
+            fetchMatriculas();
         } catch (err) {
             console.error("Erro ao aprovar matrícula:", err);
             showToast("Erro ao aprovar a matrícula.", 'error');
@@ -172,7 +183,7 @@ export default function NovasMatriculas() {
             try {
                 await api.delete(`/api/usuarios/alunos/${id}`);
                 showToast("Matrícula rejeitada com sucesso.");
-                fetchMatriculas(); 
+                fetchMatriculas();
             } catch (err) {
                 console.error("Erro ao rejeitar matrícula:", err);
                 showToast("Erro ao rejeitar a matrícula.", 'error');
@@ -188,6 +199,9 @@ export default function NovasMatriculas() {
             <h1>Novas Matrículas de Alunos</h1>
 
             <ManagementDiv>
+                <NoticeBox>
+                    ⚠️ Para aprovar ou rejeitar matrículas, editar ou excluir alunos, utilize o menu <strong>Gestão de Usuários &gt; Usuários Cadastrados</strong>.
+                </NoticeBox>
                 {loading && <p>A carregar novas matrículas...</p>}
 
                 {!loading && matriculas.length === 0 && (
@@ -200,15 +214,6 @@ export default function NovasMatriculas() {
                             <InfoDiv>
                                 <span>{user.nome}</span>
                             </InfoDiv>
-                            <ActionsDiv>
-                                <Button approve onClick={() => handleAprovar(user.id)} disabled={loading}>
-                                    Aprovar
-                                </Button>
-
-                                <Button danger onClick={() => handleRejeitar(user.id)} disabled={loading}>
-                                    Rejeitar
-                                </Button>
-                            </ActionsDiv>
                         </Card>
                     ))}
                 </ListDiv>

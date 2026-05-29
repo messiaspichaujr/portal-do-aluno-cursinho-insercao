@@ -16,6 +16,13 @@ const fadeIn = keyframes`
     to { opacity: 1; transform: translateY(0); }
 `;
 
+const LoadingContainer = styled.div`
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
 const PageContent = styled.div`
     animation: ${fadeIn} 0.8s ease-out;
 `;
@@ -97,7 +104,7 @@ export default function Home() {
     }, []);
 
     if (loading) {
-        return <PageContent><Loading /></PageContent>;
+        return <LoadingContainer><Loading /></LoadingContainer>;
     }
 
     return (

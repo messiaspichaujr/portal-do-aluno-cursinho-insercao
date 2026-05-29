@@ -103,4 +103,33 @@ public class FrequenciaDAO {
             em.close();
         }
     }
+
+    public int contarPorAluno(int alunoId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(f) FROM Frequencia f WHERE f.aluno = :alunoId", Long.class);
+            query.setParameter("alunoId", alunoId);
+            return query.getSingleResult().intValue();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void removerPorAluno(int alunoId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            TypedQuery<Frequencia> query = em.createQuery(
+                "SELECT f FROM Frequencia f WHERE f.aluno = :alunoId", Frequencia.class);
+            query.setParameter("alunoId", alunoId);
+            List<Frequencia> lista = query.getResultList();
+            for (Frequencia f : lista) {
+                em.remove(f);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
 }

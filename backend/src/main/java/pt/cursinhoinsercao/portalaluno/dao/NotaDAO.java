@@ -123,4 +123,33 @@ public class NotaDAO {
             em.close();
         }
     }
+
+    public int contarPorAluno(int alunoId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(n) FROM Nota n WHERE n.aluno = :alunoId", Long.class);
+            query.setParameter("alunoId", alunoId);
+            return query.getSingleResult().intValue();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void removerPorAluno(int alunoId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            TypedQuery<Nota> query = em.createQuery(
+                "SELECT n FROM Nota n WHERE n.aluno = :alunoId", Nota.class);
+            query.setParameter("alunoId", alunoId);
+            List<Nota> lista = query.getResultList();
+            for (Nota n : lista) {
+                em.remove(n);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
 }

@@ -67,4 +67,33 @@ public class DisciplinaProfDAO {
             em.close();
         }
     }
+
+    public int contarPorProfessor(int profId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(dp) FROM DisciplinaProf dp WHERE dp.prof = :profId", Long.class);
+            query.setParameter("profId", profId);
+            return query.getSingleResult().intValue();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void removerPorProfessor(int profId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            TypedQuery<DisciplinaProf> query = em.createQuery(
+                "SELECT dp FROM DisciplinaProf dp WHERE dp.prof = :profId", DisciplinaProf.class);
+            query.setParameter("profId", profId);
+            List<DisciplinaProf> lista = query.getResultList();
+            for (DisciplinaProf dp : lista) {
+                em.remove(dp);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
 }

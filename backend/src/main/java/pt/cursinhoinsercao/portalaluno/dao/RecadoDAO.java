@@ -75,4 +75,33 @@ public class RecadoDAO {
             em.close();
         }
     }
+
+    public int contarPorProfessor(int profId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(r) FROM Recado r WHERE r.prof = :profId", Long.class);
+            query.setParameter("profId", profId);
+            return query.getSingleResult().intValue();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void removerPorProfessor(int profId) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            TypedQuery<Recado> query = em.createQuery(
+                "SELECT r FROM Recado r WHERE r.prof = :profId", Recado.class);
+            query.setParameter("profId", profId);
+            List<Recado> lista = query.getResultList();
+            for (Recado r : lista) {
+                em.remove(r);
+            }
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+    }
 }

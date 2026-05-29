@@ -3,6 +3,10 @@ package pt.cursinhoinsercao.portalaluno.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.cursinhoinsercao.portalaluno.dao.UsuarioDAO;
+import pt.cursinhoinsercao.portalaluno.dao.DisciplinaProfDAO;
+import pt.cursinhoinsercao.portalaluno.dao.FrequenciaDAO;
+import pt.cursinhoinsercao.portalaluno.dao.NotaDAO;
+import pt.cursinhoinsercao.portalaluno.dao.RecadoDAO;
 import pt.cursinhoinsercao.portalaluno.dto.Login;
 import pt.cursinhoinsercao.portalaluno.dto.UsuarioDTO;
 import pt.cursinhoinsercao.portalaluno.entity.Disciplina;
@@ -176,5 +180,79 @@ public class UsuarioService {
 
         usuarioDAO.atualizar(usuario);
         return usuario;
+    }
+
+    public String verificarDependencias(int id) {
+        Usuario usuario = usuarioDAO.buscarPorId(id);
+        if (usuario == null) {
+            return "Usuário não encontrado.";
+        }
+
+        StringBuilder dependencias = new StringBuilder();
+
+        if (usuario.getTipo() == 2) {
+            DisciplinaProfDAO profDao = new DisciplinaProfDAO();
+            int disciplinas = profDao.contarPorProfessor(id);
+            if (disciplinas > 0) {
+                dependencias.append(disciplinas).append(" disciplina(s) associada(s); ");
+            }
+
+            RecadoDAO recadoDao = new RecadoDAO();
+            int recados = recadoDao.contarPorProfessor(id);
+            if (recados > 0) {
+                dependencias.append(recados).append(" recado(s); ");
+            }
+        }
+
+        if (usuario.getTipo() == 3) {
+            NotaDAO notaDao = new NotaDAO();
+            int notas = notaDao.contarPorAluno(id);
+            if (notas > 0) {
+                dependencias.append(notas).append(" nota(s) lançada(s); ");
+            }
+
+            FrequenciaDAO freqDao = new FrequenciaDAO();
+            int frequencias = freqDao.contarPorAluno(id);
+            if (frequencias > 0) {
+                dependencias.append(frequencias).append(" frequência(s) registrada(s); ");
+            }
+        }
+
+        return dependencias.length() > 0 ? dependencias.toString() : null;
+    }
+
+    public void excluirUsuario(int id, boolean excluirDependencias) throws Exception {
+        Usuario usuario = usuarioDAO.buscarPorId(id);
+        if (usuario == null) {
+            throw new Exception("Usuário não encontrado.");
+        }
+
+        String dependencias = verificarDependencias(id);
+        if (dependencias != null && !excluirDependencias) {
+            throw new Exception("Usuário possui dependências: " + dependencias + " Para excluir, confirme a exclusão das dependências.");
+        }
+
+        if (excluirDependencias) {
+            logger.info("Excluindo usuário {} e suas dependências em cascata", id);
+
+            if (usuario.getTipo() == 2) {
+                DisciplinaProfDAO profDao = new DisciplinaProfDAO();
+                profDao.removerPorProfessor(id);
+
+                RecadoDAO recadoDao = new RecadoDAO();
+                recadoDao.removerPorProfessor(id);
+            }
+
+            if (usuario.getTipo() == 3) {
+                NotaDAO notaDao = new NotaDAO();
+                notaDao.removerPorAluno(id);
+
+                FrequenciaDAO freqDao = new FrequenciaDAO();
+                freqDao.removerPorAluno(id);
+            }
+        }
+
+        usuarioDAO.remover(usuario);
+        logger.info("Usuário {} excluído com sucesso", id);
     }
 }

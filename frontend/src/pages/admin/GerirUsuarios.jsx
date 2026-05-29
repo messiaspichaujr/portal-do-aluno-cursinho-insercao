@@ -199,6 +199,34 @@ export default function GerirUsuarios() {
         }
     };
 
+    const handleExcluir = async (usuario) => {
+        setLoading(true);
+        try {
+            const depResponse = await api.get(`/api/usuarios/${usuario.id}/dependencias`);
+            const dependencias = depResponse.data;
+
+            if (dependencias === "Sem dependências") {
+                if (window.confirm(`Tem certeza que deseja excluir ${usuario.nome}?`)) {
+                    await api.delete(`/api/usuarios/${usuario.id}`);
+                    showToast("Usuário excluído com sucesso!");
+                    fetchUsuarios();
+                }
+            } else {
+                const msg = `O usuário possui dependências:\n${dependencias}\n\nDeseja excluir o usuário E todas as dependências?`;
+                if (window.confirm(msg)) {
+                    await api.delete(`/api/usuarios/${usuario.id}?excluirDependencias=true`);
+                    showToast("Usuário e dependências excluídos com sucesso!");
+                    fetchUsuarios();
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            showToast(err.response?.data || "Erro ao excluir usuário.", 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <Div>
             <ToastMessage show={toast.show} type={toast.type}>{toast.message}</ToastMessage>
@@ -244,6 +272,9 @@ export default function GerirUsuarios() {
                             <ActionsDiv>
                                 <Button onClick={() => openEditModal(user)} disabled={loading}>
                                     Editar
+                                </Button>
+                                <Button danger onClick={() => handleExcluir(user)} disabled={loading}>
+                                    Excluir
                                 </Button>
                             </ActionsDiv>
                         </Card>

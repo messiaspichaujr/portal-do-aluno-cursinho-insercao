@@ -158,4 +158,29 @@ public class UsuarioResource {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
+
+    @DELETE
+    @Path("/{id}")
+    @Seguranca
+    @AdminOnly
+    public Response excluirUsuario(@PathParam("id") int id, @QueryParam("excluirDependencias") boolean excluirDependencias) {
+        try {
+            usuarioService.excluirUsuario(id, excluirDependencias);
+            return Response.ok().entity("Usuário excluído com sucesso.").build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Path("/{id}/dependencias")
+    @Seguranca
+    @AdminOnly
+    public Response verificarDependencias(@PathParam("id") int id) {
+        String dependencias = usuarioService.verificarDependencias(id);
+        if (dependencias == null) {
+            return Response.ok().entity("Sem dependências").build();
+        }
+        return Response.ok().entity(dependencias).build();
+    }
 }

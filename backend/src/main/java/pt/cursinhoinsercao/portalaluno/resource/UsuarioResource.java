@@ -73,15 +73,6 @@ public class UsuarioResource {
         return Response.ok().build();
     }
 
-    @DELETE
-    @Path("/{id}")
-    @Seguranca
-    @AdminOnly
-    public Response rejeitarOuRemoverEducador(@PathParam("id") int id) {
-        usuarioService.rejeitarOuRemoverEducador(id);
-        return Response.noContent().build();
-    }
-
     @GET
     @Path("/alunos/pendentes")
     @Produces(MediaType.APPLICATION_JSON)

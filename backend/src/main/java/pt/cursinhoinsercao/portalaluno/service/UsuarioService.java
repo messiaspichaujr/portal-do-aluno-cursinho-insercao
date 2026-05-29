@@ -95,13 +95,6 @@ public class UsuarioService {
         }
     }
 
-    public void rejeitarOuRemoverEducador(int id) {
-        Usuario usuario = usuarioDAO.buscarPorId(id);
-        if (usuario != null) {
-            usuarioDAO.remover(usuario);
-        }
-    }
-
     public List<Usuario> listarMatriculasPendentes() {
         return usuarioDAO.listarAlunosPorStatus(false);
     }
@@ -130,13 +123,6 @@ public class UsuarioService {
             }
         } catch (Exception e) {
             logger.error("Erro ao matricular aluno {} nas disciplinas: {}", alunoId, e.getMessage());
-        }
-    }
-
-    public void rejeitarOuRemoverAluno(int id) {
-        Usuario usuario = usuarioDAO.buscarPorId(id);
-        if (usuario != null && usuario.getTipo() == 3) {
-            usuarioDAO.remover(usuario);
         }
     }
 
